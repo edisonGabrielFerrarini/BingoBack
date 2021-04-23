@@ -1,19 +1,25 @@
 package br.com.devtec.bingo.api.cliente
 
+import br.com.devtec.bingo.dominio.bingo.dto.ClienteDTO
+import br.com.devtec.bingo.dominio.bingo.facade.ClienteFacade
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping(value = ["/api/cliente"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class ClientesApi(
+    @Autowired private val clienteFacade: ClienteFacade
 ) {
+
+    @PostMapping(value = ["/create"])
+    fun create(@RequestBody clienteDTO: ClienteDTO){
+        clienteFacade.create(clienteDTO)
+    }
 
     @GetMapping(value = ["/all"])
     fun getAllClients(): String {
-        return "ola a todos"
+        return "clienteFacade.create()"
     }
 
     @GetMapping(value = ["/get/{id}"])

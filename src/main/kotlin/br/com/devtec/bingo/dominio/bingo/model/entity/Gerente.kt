@@ -18,14 +18,26 @@ data class Gerente(
     @Column(length = 60, nullable = false)
     val nome: String,
 
-    @OneToOne(fetch = FetchType.LAZY)
-    val endereco: Endereco,
+    @Column(length = 30, nullable = false)
+    val telefone: String,
 
-    @OneToOne(fetch = FetchType.LAZY)
-    val contato: Contato,
+    @Column(length = 30, nullable = false)
+    val celular: String,
 
     @Column(length = 20, nullable = false)
     val cpf: String,
+
+    @Column(length = 150, nullable = false)
+    val cidade: String,
+
+    @Column(length = 150, nullable = false)
+    val bairro: String,
+
+    @Column(length = 20, nullable = false)
+    val cep: String,
+
+    @Column(length = 100, nullable = false)
+    val estado: String,
 
     @CreatedDate
     @Column(nullable = false)

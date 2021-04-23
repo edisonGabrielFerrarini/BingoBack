@@ -5,25 +5,36 @@ CREATE TABLE cliente (
     nome            VARCHAR(60) NOT NULL,
     id_endereco     INTEGER,
     id_contato      INTEGER     NOT NULL,
+    telefone        VARCHAR(30),
+    celular         VARCHAR(30),
     cpf             VARCHAR(20) NOT NULL,
     saldo           DECIMAL,
     ganhos          DECIMAL,
+    cidade          VARCHAR(150),
+    bairro          VARCHAR(150),
+    cep             VARCHAR(20),
+    estado          VARCHAR(100),
     created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
 CREATE TABLE agente (
     id              BIGSERIAL   NOT NULL,
-    id_usuario      INTEGER     NOT NULL,
-    id_gerente       INTEGER     NOT NULL,
-    nome            VARCHAR(60) NOT NULL,
-    id_endereco     INTEGER,
-    id_contato      INTEGER     NOT NULL,
-    cpf             VARCHAR(20) NOT NULL,
-    saldo           DECIMAL,
-    ganhos          DECIMAL,
-    created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL
+    id_usuario          INTEGER     NOT NULL,
+    id_gerente          INTEGER     NOT NULL,
+    nome                VARCHAR(60) NOT NULL,
+    id_endereco         INTEGER,
+    id_contato          INTEGER     NOT NULL,
+    cpf                 VARCHAR(20) NOT NULL,
+    telefone            VARCHAR(30),
+    celular             VARCHAR(30),
+    porcentual_venda    DECIMAL,
+    cidade              VARCHAR(150),
+    bairro              VARCHAR(150),
+    cep                 VARCHAR(20),
+    estado              VARCHAR(100),
+    created_at          TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at          TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
 CREATE TABLE gerente (
@@ -33,6 +44,12 @@ CREATE TABLE gerente (
     id_endereco     INTEGER,
     id_contato      INTEGER     NOT NULL,
     cpf             VARCHAR(20) NOT NULL,
+    telefone        VARCHAR(30),
+    celular         VARCHAR(30),
+    cidade          VARCHAR(150),
+    bairro          VARCHAR(150),
+    cep             VARCHAR(20),
+    estado          VARCHAR(100),
     created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
@@ -74,19 +91,3 @@ CREATE TABLE cartela (
     updated_at          TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
-CREATE TABLE endereco (
-    id              BIGSERIAL       NOT NULL,
-    cidade          VARCHAR(150)    NOT NULL,
-    bairro          VARCHAR(150)    NOT NULL,
-    cep             VARCHAR(20)     NOT NULL,
-    estado          VARCHAR(100)    NOT NULL,
-    created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL
-);
-
-CREATE TABLE contato (
-    id              BIGSERIAL           NOT NULL,
-    telefone        VARCHAR(30)         NOT NULL,
-    created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL
-);
