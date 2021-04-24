@@ -1,6 +1,6 @@
-package br.com.devtec.bingo.dominio.bingo.model.repository
+package br.com.devtec.bingo.dominio.cliente.model.repository
 
-import br.com.devtec.bingo.dominio.bingo.model.entity.Gerente
+import br.com.devtec.bingo.dominio.cliente.model.entity.Gerente
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface GerenteRepository: JpaRepository<Gerente, Long> {

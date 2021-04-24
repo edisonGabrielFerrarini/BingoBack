@@ -1,9 +1,10 @@
 package br.com.devtec.bingo.api.cliente
 
-import br.com.devtec.bingo.dominio.bingo.dto.ClienteDTO
-import br.com.devtec.bingo.dominio.bingo.facade.ClienteFacade
+import br.com.devtec.bingo.dominio.cliente.dto.ClienteRequestDTO
+import br.com.devtec.bingo.dominio.cliente.facade.ClienteFacade
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -13,17 +14,27 @@ class ClientesApi(
 ) {
 
     @PostMapping(value = ["/create"])
-    fun create(@RequestBody clienteDTO: ClienteDTO){
-        clienteFacade.create(clienteDTO)
+    fun create(@RequestBody clienteRequestDTO: ClienteRequestDTO): ResponseEntity<Any> {
+        return ResponseEntity.ok(clienteFacade.create(clienteRequestDTO))
     }
 
     @GetMapping(value = ["/all"])
-    fun getAllClients(): String {
-        return "clienteFacade.create()"
+    fun getAllClients(): ResponseEntity<Any> {
+        return ResponseEntity.ok(clienteFacade.getAll())
     }
 
-    @GetMapping(value = ["/get/{id}"])
-    fun get(@PathVariable("id") id: Int): String {
-        return "$id"
+    @GetMapping(value = ["/get/{cpf}"])
+    fun getByCpf(@PathVariable("cpf") cpf: String): ResponseEntity<Any> {
+        return ResponseEntity.ok(clienteFacade.getByCpf(cpf))
     }
+
+    @PutMapping(value = ["/update/{id}"])
+    fun update(
+        @PathVariable("id") id: Long,
+        @RequestBody clienteRequestDTO: ClienteRequestDTO
+    ): ResponseEntity<Any> {
+        return clienteFacade.update(id, clienteRequestDTO)
+    }
+
+
 }

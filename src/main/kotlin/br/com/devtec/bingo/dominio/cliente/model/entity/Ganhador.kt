@@ -1,28 +1,19 @@
-package br.com.devtec.bingo.dominio.bingo.model.entity
+package br.com.devtec.bingo.dominio.cliente.model.entity
 
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-@Table(name = "cartela")
-data class Cartela(
+@Table(name = "ganhador")
+data class Ganhador(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "serial")
     val id: Long,
 
-    @Column(nullable = false)
-    val numeros_sorteados: String,
-
-    @Column(nullable = false)
-    val ativa: Boolean,
-
-    @Column(nullable = false)
-    val valor: Double,
-
-    @Column(nullable = false)
-    val valor_numero: Double,
+    @OneToOne(fetch = FetchType.LAZY)
+    val ticket: Ticket,
 
     @CreatedDate
     @Column(nullable = false)

@@ -54,11 +54,16 @@ FOREIGN KEY (id_cartela) REFERENCES cartela (id);
 
 ALTER TABLE cliente ADD CONSTRAINT cliente_pk PRIMARY KEY(id);
 
-ALTER TABLE cliente
-ADD CONSTRAINT cliente__usuario_fk
-FOREIGN KEY (id_usuario) REFERENCES usuario (id);
+--=========================================================
+-- CLIENTE_AGENTE
+--=========================================================
 
-ALTER TABLE cliente
-ADD CONSTRAINT cliente__agente_fk
+ALTER TABLE cliente_agente ADD CONSTRAINT teste_pk PRIMARY KEY(id);
+
+ALTER TABLE cliente_agente
+ADD CONSTRAINT cliente_agente__cliente_fk
+FOREIGN KEY (id_cliente) REFERENCES cliente (id);
+
+ALTER TABLE cliente_agente
+ADD CONSTRAINT cliente_agente_fk
 FOREIGN KEY (id_agente) REFERENCES agente (id);
-

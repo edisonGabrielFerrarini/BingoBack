@@ -1,16 +1,15 @@
-package br.com.devtec.bingo.dominio.bingo.dto
+package br.com.devtec.bingo.dominio.cliente.dto
 
-data class ClienteDTO(
+data class ClienteDTO (
+    val id: Long,
     val nome: String,
-    val id_usuario: Long,
-    val id_agente: Long,
     val telefone: String,
     val celular: String,
     val cpf: String,
+    val email: String,
+    val senha: String,
     val ganhos: Double,
     val saldo: Double,
     val cidade: String,
-    val bairro: String,
-    val cep: String,
     val estado: String
 )
