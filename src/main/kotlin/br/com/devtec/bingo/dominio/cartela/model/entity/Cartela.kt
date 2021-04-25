@@ -1,4 +1,4 @@
-package br.com.devtec.bingo.dominio.cliente.model.entity
+package br.com.devtec.bingo.dominio.cartela.model.entity
 
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
@@ -10,10 +10,10 @@ data class Cartela(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "serial")
-    val id: Long,
+    val id: Long = 0,
 
-    @Column(nullable = false)
-    val numeros_sorteados: String,
+    @Column(nullable = true)
+    val numeros_sorteados: String?,
 
     @Column(nullable = false)
     val ativa: Boolean,

@@ -1,7 +1,9 @@
 package br.com.devtec.bingo.dominio.cliente.facade
 
 import br.com.devtec.bingo.dominio.cliente.business.ClienteBusiness
+import br.com.devtec.bingo.dominio.cliente.dto.ClienteGanhosDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteRequestDTO
+import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -25,5 +27,21 @@ class ClienteFacade {
 
     fun update(id: Long, clienteDTO: ClienteRequestDTO): ResponseEntity<Any> {
         return clienteBusiness.update(id, clienteDTO)
+    }
+
+    fun updateSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
+        return clienteBusiness.updateSaldo(id, clienteSaldoDTO)
+    }
+
+    fun updateGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<Any> {
+        return clienteBusiness.updateGanhos(id, clienteGanhosDTO)
+    }
+
+    fun debitarSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
+        return clienteBusiness.debitarSaldo(id, clienteSaldoDTO)
+    }
+
+    fun debitarGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<Any> {
+        return clienteBusiness.debitarGanhos(id, clienteGanhosDTO)
     }
 }

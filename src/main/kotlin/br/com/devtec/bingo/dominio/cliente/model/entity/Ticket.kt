@@ -1,5 +1,6 @@
 package br.com.devtec.bingo.dominio.cliente.model.entity
 
+import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
 import javax.persistence.*

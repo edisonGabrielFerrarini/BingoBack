@@ -1,10 +1,12 @@
 package br.com.devtec.bingo.dominio.cliente.business
 
+import br.com.devtec.bingo.dominio.cliente.dto.ClienteGanhosDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteRequestDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
 import br.com.devtec.bingo.dominio.cliente.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.cliente.dto.converter.toEntity
 import br.com.devtec.bingo.dominio.cliente.dto.converter.toResponseDTO
+import br.com.devtec.bingo.dominio.cliente.model.entity.Cliente
 import br.com.devtec.bingo.dominio.cliente.model.repository.ClienteRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -60,11 +62,56 @@ class ClienteBusiness{
         return ResponseEntity.status(400).body("cliente não encontrado")
     }
 
-    fun updateCredito(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
+    fun updateSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
         val cliente = clienteRepository.findById(id).get()
         if (nonNull(cliente)){
             val save = clienteRepository.save(cliente.copy(
                 saldo = cliente.saldo + clienteSaldoDTO.saldo
+            ))
+            return if (nonNull(save)){
+                ResponseEntity.status(HttpStatus.ACCEPTED).body(save)
+            }else{
+                ResponseEntity.status(400).body("erro ao salvar no banco de dados")
+            }
+        }
+        return ResponseEntity.status(400).body("cliente não encontrado")
+    }
+
+    fun updateGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<Any> {
+        val cliente = clienteRepository.findById(id).get()
+        if (nonNull(cliente)){
+            val save = clienteRepository.save(cliente.copy(
+                ganhos = cliente.ganhos + clienteGanhosDTO.ganhos
+            ))
+            return if (nonNull(save)){
+                ResponseEntity.status(HttpStatus.ACCEPTED).body(save)
+            }else{
+                ResponseEntity.status(400).body("erro ao salvar no banco de dados")
+            }
+        }
+        return ResponseEntity.status(400).body("cliente não encontrado")
+    }
+
+    fun debitarSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
+        val cliente = clienteRepository.findById(id).get()
+        if (nonNull(cliente)){
+            val save = clienteRepository.save(cliente.copy(
+                saldo = cliente.saldo - clienteSaldoDTO.saldo
+            ))
+            return if (nonNull(save)){
+                ResponseEntity.status(HttpStatus.ACCEPTED).body(save)
+            }else{
+                ResponseEntity.status(400).body("erro ao salvar no banco de dados")
+            }
+        }
+        return ResponseEntity.status(400).body("cliente não encontrado")
+    }
+
+    fun debitarGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<Any> {
+        val cliente = clienteRepository.findById(id).get()
+        if (nonNull(cliente)){
+            val save = clienteRepository.save(cliente.copy(
+                ganhos = cliente.ganhos - clienteGanhosDTO.ganhos
             ))
             return if (nonNull(save)){
                 ResponseEntity.status(HttpStatus.ACCEPTED).body(save)

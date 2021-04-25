@@ -73,7 +73,7 @@ CREATE TABLE cartela (
     id                  BIGSERIAL       NOT NULL,
     ativa               BOOLEAN         NOT NULL,
     id_cartela          INTEGER         NOT NULL,
-    numeros_sorteados   TEXT        NOT NULL,
+    numeros_sorteados   TEXT,
     valor               DECIMAL         NOT NULL,
     valor_numero        DECIMAL         NOT NULL,
     created_at          TIMESTAMP WITHOUT TIME ZONE NOT NULL,

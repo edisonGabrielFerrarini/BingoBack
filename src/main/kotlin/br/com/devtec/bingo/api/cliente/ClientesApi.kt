@@ -1,6 +1,8 @@
 package br.com.devtec.bingo.api.cliente
 
+import br.com.devtec.bingo.dominio.cliente.dto.ClienteGanhosDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteRequestDTO
+import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
 import br.com.devtec.bingo.dominio.cliente.facade.ClienteFacade
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -36,5 +38,12 @@ class ClientesApi(
         return clienteFacade.update(id, clienteRequestDTO)
     }
 
+    @PutMapping(value = ["/update-saldo/{id}"])
+    fun updateCreditos(
+        @PathVariable("id") id: Long,
+        @RequestBody clienteSaldoDTO: ClienteSaldoDTO
+    ): ResponseEntity<Any> {
+        return clienteFacade.updateSaldo(id, clienteSaldoDTO)
+    }
 
 }
