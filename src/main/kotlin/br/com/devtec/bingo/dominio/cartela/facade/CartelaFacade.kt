@@ -24,4 +24,8 @@ class CartelaFacade {
         return cartelaBusiness.inativarCartela()
     }
 
+    fun sortear(){
+        return cartelaBusiness.sortearNumeros()
+    }
+
 }

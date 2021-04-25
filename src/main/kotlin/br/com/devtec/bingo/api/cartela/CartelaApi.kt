@@ -28,4 +28,9 @@ class CartelaApi(
         return cartelaFacade.inativarCartela()
     }
 
+    @GetMapping(value = ["/sortear"])
+    fun sortearNumeros(){
+        return cartelaFacade.sortear()
+    }
+
 }

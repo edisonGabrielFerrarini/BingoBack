@@ -6,6 +6,7 @@ import br.com.devtec.bingo.dominio.cartela.dto.converter.toEntity
 import br.com.devtec.bingo.dominio.cartela.dto.converter.toInativeEntity
 import br.com.devtec.bingo.dominio.cartela.model.repository.CartelaRepository
 import br.com.devtec.bingo.dominio.cartela.utils.EnumCartela
+import br.com.devtec.bingo.dominio.cartela.utils.GeradorNumeros
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,6 +18,9 @@ class CartelaBusiness {
 
     @Autowired
     lateinit var cartelaRepository: CartelaRepository
+
+    @Autowired
+    lateinit var geradorNumeros: GeradorNumeros
 
     fun create(cartelaDTO: CartelaDTO): ResponseEntity<Any> {
         if (nonNull(cartelaRepository.findByAtiva(true))){
@@ -50,6 +54,11 @@ class CartelaBusiness {
         }
 
         return ResponseEntity.status(400).body(EnumCartela.InicieUmaCartela.value)
+    }
+
+
+    fun sortearNumeros(){
+        println(geradorNumeros.gerarNumeros())
     }
 
 
