@@ -20,7 +20,7 @@ class CartelaApi(
 
     @GetMapping(value = ["/all"])
     fun get(): ResponseEntity<Any> {
-        return cartelaFacade.get()
+        return cartelaFacade.getAtiva()
     }
 
     @GetMapping(value = ["/inativar"])

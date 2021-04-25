@@ -1,6 +1,7 @@
-package br.com.devtec.bingo.dominio.cliente.model.entity
+package br.com.devtec.bingo.dominio.ticket.model.entity
 
 import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
+import br.com.devtec.bingo.dominio.cliente.model.entity.Cliente
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -11,7 +12,7 @@ data class Ticket(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "serial")
-    val id: Long,
+    val id: Long = 0,
 
     @OneToOne(fetch = FetchType.LAZY)
     val cliente: Cliente,

@@ -3,7 +3,7 @@ package br.com.devtec.bingo.dominio.cartela.business
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaDTO
 import br.com.devtec.bingo.dominio.cartela.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.cartela.dto.converter.toEntity
-import br.com.devtec.bingo.dominio.cartela.dto.converter.toInativeEntity
+import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
 import br.com.devtec.bingo.dominio.cartela.model.repository.CartelaRepository
 import br.com.devtec.bingo.dominio.cartela.utils.EnumCartela
 import br.com.devtec.bingo.dominio.cartela.utils.GeradorNumeros
@@ -23,7 +23,7 @@ class CartelaBusiness {
     lateinit var geradorNumeros: GeradorNumeros
 
     fun create(cartelaDTO: CartelaDTO): ResponseEntity<Any> {
-        if (nonNull(cartelaRepository.findByAtiva(true))){
+        if (nonNull(cartelaRepository.findByAtiva(ativa = true))){
             return ResponseEntity.status(400).body(EnumCartela.CartelaAtivaExite.value)
         }
         val save = cartelaRepository.save(cartelaDTO.toEntity())
@@ -34,7 +34,7 @@ class CartelaBusiness {
     }
 
     fun get(): ResponseEntity<Any> {
-        val cartela = cartelaRepository.findByAtiva(true)
+        val cartela = cartelaAtiva()
         return if (nonNull(cartela)){
             ResponseEntity.status(HttpStatus.ACCEPTED).body(cartela?.toDTO())
         }else {
@@ -43,11 +43,16 @@ class CartelaBusiness {
     }
 
     fun inativarCartela(): ResponseEntity<Any> {
-        val cartela = cartelaRepository.findByAtiva(true)
+        val cartela = cartelaAtiva()
         if (nonNull(cartela)){
-            val save = cartela?.toDTO()?.let { cartelaRepository.save(it.toInativeEntity(cartela.id)) }
+            val save = cartela?.let {
+                cartelaRepository.save(
+                    it.copy(
+                        ativa = false
+                    ))
+            }
             return if (nonNull(save)){
-                ResponseEntity.status(HttpStatus.ACCEPTED).body(save)
+                ResponseEntity.status(HttpStatus.ACCEPTED).body(save?.toDTO())
             }else {
                 ResponseEntity.status(400).body(EnumCartela.ErroBanco.value)
             }
@@ -58,8 +63,47 @@ class CartelaBusiness {
 
 
     fun sortearNumeros(){
-        println(geradorNumeros.gerarNumeros())
+        var cartela = cartelaAtiva()
+        var numeros = geradorNumeros.gerarNumeros().toString()
+        if (nonNull(cartela)) {
+            var save = cartela?.let {
+                cartelaRepository.save(
+                    it.copy(
+                        numeros_sorteados = numeros
+                    ))
+            }
+            println(save)
+        }
+    }
+
+    fun cartelaAtiva(): Cartela? {
+        return cartelaRepository.findByAtiva(ativa = true)
     }
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

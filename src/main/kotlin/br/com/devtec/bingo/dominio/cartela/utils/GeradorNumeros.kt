@@ -3,7 +3,6 @@ package br.com.devtec.bingo.dominio.cartela.utils
 import org.springframework.stereotype.Service
 import kotlin.random.Random
 
-
 @Service
 class GeradorNumeros {
     fun gerarNumeros(): List<Int> {
