@@ -29,7 +29,7 @@ class CartelaApi(
     }
 
     @GetMapping(value = ["/sortear"])
-    fun sortearNumeros(){
+    fun sortearNumeros(): ResponseEntity<Any> {
         return cartelaFacade.sortear()
     }
 

@@ -7,6 +7,7 @@ import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
 import br.com.devtec.bingo.dominio.cliente.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.cliente.dto.converter.toEntity
 import br.com.devtec.bingo.dominio.cliente.dto.converter.toResponseDTO
+import br.com.devtec.bingo.dominio.cliente.exception.PersistirDadosException
 import br.com.devtec.bingo.dominio.cliente.model.entity.Cliente
 import br.com.devtec.bingo.dominio.cliente.model.repository.ClienteRepository
 import br.com.devtec.bingo.dominio.cliente.utils.EnumCliente
@@ -23,12 +24,9 @@ class ClienteBusiness {
     lateinit var clienteRepository: ClienteRepository
 
     fun create(clienteRequestDTO: ClienteRequestDTO): Any {
-        val cliente = clienteRepository.findByCpf(clienteRequestDTO.cpf)
-        if (nonNull(cliente)) {
-            return ResponseEntity.status(400)
-                .body("Não foi possivel cadastrar este cliente, pois já esta cadastrado.")
+        clienteRepository.findByCpf(clienteRequestDTO.cpf)?.run {
+            return ResponseEntity.status(400).body("Não foi possivel cadastrar este cliente, pois já esta cadastrado.")
         }
-
         return salvarDados(clienteRequestDTO.toEntity(saldo = 0.0, ganhos = 0.0))
     }
 
@@ -42,17 +40,13 @@ class ClienteBusiness {
         }
 
         return ResponseEntity.status(400).body("não foi encontrado nenhum cliente")
-
     }
 
 
     fun getByCpf(cpf: String): Any? {
-        val cliente = clienteRepository.findByCpf(cpf)?.toResponseDTO()
-
-        if (nonNull(cliente)) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(clienteRepository.findByCpf(cpf)?.toResponseDTO())
+        clienteRepository.findByCpf(cpf)?.let {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(it.toResponseDTO())
         }
-
         return ResponseEntity.status(400).body(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
     }
 
@@ -64,27 +58,31 @@ class ClienteBusiness {
     }
 
     fun updateSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
-        val cliente = clienteRepository.findById(id).get()
-        if (nonNull(cliente)) {
-            return salvarDados(
-                cliente.copy(
-                    saldo = cliente.saldo + clienteSaldoDTO.saldo
+        try {
+            clienteRepository.findById(id).get().let {
+                return salvarDados(
+                    it.copy(
+                        saldo = it.saldo + clienteSaldoDTO.saldo
+                    )
                 )
-            )
+            }
+        } catch (e: Exception){
+            throw PersistirDadosException(EnumCliente.ERRO_AO_PERSISTIR_DADOS.erro)
         }
-        return ResponseEntity.status(400).body(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
     }
 
     fun updateGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<Any> {
-        val cliente = clienteRepository.findById(id).get()
-        if (nonNull(cliente)) {
-            return salvarDados(
-                cliente.copy(
-                    ganhos = cliente.ganhos + clienteGanhosDTO.ganhos
+        try {
+            clienteRepository.findById(id).get().let {
+                return salvarDados(
+                    it.copy(
+                        ganhos = it.ganhos + clienteGanhosDTO.ganhos
+                    )
                 )
-            )
+            }
+        } catch (e: Exception){
+            throw PersistirDadosException(EnumCliente.ERRO_AO_PERSISTIR_DADOS.erro)
         }
-        return ResponseEntity.status(400).body("cliente não encontrado")
     }
 
     fun debitarSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
@@ -116,11 +114,12 @@ class ClienteBusiness {
     }
 
     fun salvarDados(cliente: Cliente): ResponseEntity<Any> {
-        val save = clienteRepository.save(cliente)
-        return if (nonNull(save)) {
-            ResponseEntity.status(HttpStatus.ACCEPTED).body(save.toResponseDTO())
-        } else {
-            ResponseEntity.status(400).body(EnumCliente.ERRO_AO_PERSISTIR_DADOS.erro)
+        try {
+            clienteRepository.save(cliente).let {
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body(it.toResponseDTO())
+            }
+        }catch (e: Exception){
+            throw e.message?.let { PersistirDadosException(it) }!!
         }
     }
 

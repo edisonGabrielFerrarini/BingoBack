@@ -1,4 +1,4 @@
-package br.com.devtec.bingo.dominio.cliente.model.entity
+package br.com.devtec.bingo.dominio.ganhador.model.entity
 
 import br.com.devtec.bingo.dominio.ticket.model.entity.Ticket
 import org.springframework.data.annotation.CreatedDate
@@ -11,7 +11,7 @@ data class Ganhador(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "serial")
-    val id: Long,
+    val id: Long = 0,
 
     @OneToOne(fetch = FetchType.LAZY)
     val ticket: Ticket,

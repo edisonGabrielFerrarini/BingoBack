@@ -56,14 +56,14 @@ class TicketBusiness(
                 }
             }
             return "erro"
-        }catch (e: Exception){
+        } catch (e: Exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
         }
     }
 
     fun getAll(): ResponseEntity<Any> {
         var tickets = ticketRepository.findAll()
-        if (tickets.isNotEmpty()){
+        if (tickets.isNotEmpty()) {
             var ticketsDTO = tickets.asSequence().map {
                 it.toDTO()
             }.toList()
@@ -74,12 +74,20 @@ class TicketBusiness(
 
     fun getByUser(idCliente: Long): ResponseEntity<Any> {
         var tickets = ticketRepository.findByClienteId(idCliente)
-        if (tickets != null){
+        if (tickets != null) {
             val ticketsDTO = tickets.asSequence().map { it.toDTO() }.toList()
 
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(ticketsDTO)
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao encontrar ticket")
+    }
+
+    fun getByNumeros(numerosSorteados: String): List<Ticket> {
+        try {
+            return ticketRepository.findByNumeros(numerosSorteados)
+        }catch (e: Exception){
+            throw Exception(e)
+        }
     }
 
 }

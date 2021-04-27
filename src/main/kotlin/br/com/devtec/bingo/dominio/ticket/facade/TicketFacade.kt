@@ -2,6 +2,8 @@ package br.com.devtec.bingo.dominio.ticket.facade
 
 import br.com.devtec.bingo.dominio.ticket.business.TicketBusiness
 import br.com.devtec.bingo.dominio.ticket.dto.TicketDTO
+import br.com.devtec.bingo.dominio.ticket.dto.TicketResponseDTO
+import br.com.devtec.bingo.dominio.ticket.model.entity.Ticket
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -22,6 +24,10 @@ class TicketFacade {
 
     fun getByCliente(id: Long): ResponseEntity<Any> {
         return ticketBusiness.getByUser(id)
+    }
+
+    fun getByNumeros(numerosSorteados: String): List<Ticket> {
+        return ticketBusiness.getByNumeros(numerosSorteados)
     }
 
 }
