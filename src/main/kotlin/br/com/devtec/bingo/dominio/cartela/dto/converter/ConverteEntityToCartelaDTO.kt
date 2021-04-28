@@ -9,3 +9,10 @@ fun Cartela.toDTO() = CartelaDTO(
     valor = valor,
     valor_numero = valor_numero
 )
+
+fun Cartela.toAcumuladoDTO() = CartelaDTO(
+    numeros_sorteados = "",
+    ativa = ativa,
+    valor = valor,
+    valor_numero = valor_numero
+)

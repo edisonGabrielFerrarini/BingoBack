@@ -1,6 +1,7 @@
 package br.com.devtec.bingo.dominio.cartela.business
 
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaDTO
+import br.com.devtec.bingo.dominio.cartela.dto.converter.toAcumuladoDTO
 import br.com.devtec.bingo.dominio.cartela.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.cartela.dto.converter.toEntity
 import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
@@ -33,6 +34,7 @@ class CartelaBusiness {
         if (nonNull(cartelaRepository.findByAtiva(ativa = true))) {
             return ResponseEntity.status(400).body(EnumCartela.CartelaAtivaExite.value)
         }
+
         val save = cartelaRepository.save(cartelaDTO.toEntity())
         if (nonNull(save)) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(save.toDTO())
@@ -65,7 +67,6 @@ class CartelaBusiness {
         }
     }
 
-
     fun gerarSorteio(): ResponseEntity<Any> {
         try {
 //            val numeros = geradorNumeros.gerarNumeros()
@@ -78,7 +79,8 @@ class CartelaBusiness {
                     inativarCartela()
                     ResponseEntity.status(HttpStatus.ACCEPTED).body(ganhador)
                 } else {
-                    inativarCartela(true)
+                    inativarCartela()
+                    criarTabelaAcumulada(this.toAcumuladoDTO())
                     ResponseEntity.status(400).body("Não houve ganhadores, sua cartela foi acumulada")
                 }
             }
@@ -87,6 +89,14 @@ class CartelaBusiness {
             throw PersistirDadosException(EnumCartela.ErroBanco.value)
         }
     }
+
+    fun criarTabelaAcumulada(cartelaDTO: CartelaDTO) =
+        cartelaRepository.save(
+            cartelaDTO.toEntity().copy(
+                acumulada = true,
+                ativa = false
+            )
+        )
 
     fun gerarGanhador(numerosSorteados: String?, cartela: Cartela): List<Ganhador>? {
         return numerosSorteados?.let { ganhadorFacade.create(it, cartela) }
