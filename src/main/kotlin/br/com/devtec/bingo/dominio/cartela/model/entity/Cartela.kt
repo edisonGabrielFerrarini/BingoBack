@@ -19,6 +19,9 @@ data class Cartela(
     val ativa: Boolean,
 
     @Column(nullable = false)
+    val acumulada: Boolean,
+
+    @Column(nullable = false)
     val valor: Double,
 
     @Column(nullable = false)

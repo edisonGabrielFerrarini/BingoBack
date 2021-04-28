@@ -7,7 +7,8 @@ fun CartelaDTO.toEntity() = Cartela(
     numeros_sorteados = numeros_sorteados,
     ativa = true,
     valor = valor,
-    valor_numero = valor_numero
+    valor_numero = valor_numero,
+    acumulada = false
 )
 
 fun CartelaDTO.toInativeEntity(id: Long) = Cartela(
@@ -15,5 +16,6 @@ fun CartelaDTO.toInativeEntity(id: Long) = Cartela(
     numeros_sorteados = numeros_sorteados,
     ativa = false,
     valor = valor,
-    valor_numero = valor_numero
+    valor_numero = valor_numero,
+    acumulada = false
 )

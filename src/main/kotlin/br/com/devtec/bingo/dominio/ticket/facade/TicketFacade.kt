@@ -1,5 +1,6 @@
 package br.com.devtec.bingo.dominio.ticket.facade
 
+import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
 import br.com.devtec.bingo.dominio.ticket.business.TicketBusiness
 import br.com.devtec.bingo.dominio.ticket.dto.TicketDTO
 import br.com.devtec.bingo.dominio.ticket.dto.TicketResponseDTO
@@ -26,8 +27,8 @@ class TicketFacade {
         return ticketBusiness.getByUser(id)
     }
 
-    fun getByNumeros(numerosSorteados: String): List<Ticket> {
-        return ticketBusiness.getByNumeros(numerosSorteados)
+    fun getByNumerosAndCartela(numerosSorteados: String, cartela: Cartela): List<Ticket>? {
+        return ticketBusiness.getByNumeros(numerosSorteados, cartela)
     }
 
 }

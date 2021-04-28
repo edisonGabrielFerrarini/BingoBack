@@ -1,6 +1,7 @@
 package br.com.devtec.bingo.dominio.ticket.business
 
 import br.com.devtec.bingo.dominio.cartela.facade.CartelaFacade
+import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
 import br.com.devtec.bingo.dominio.cliente.facade.ClienteFacade
 import br.com.devtec.bingo.dominio.cliente.model.entity.Cliente
@@ -82,9 +83,9 @@ class TicketBusiness(
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao encontrar ticket")
     }
 
-    fun getByNumeros(numerosSorteados: String): List<Ticket> {
+    fun getByNumeros(numerosSorteados: String, cartela: Cartela): List<Ticket>? {
         try {
-            return ticketRepository.findByNumeros(numerosSorteados)
+            return ticketRepository.findByNumerosAndCartelaId(numerosSorteados, cartela)
         }catch (e: Exception){
             throw Exception(e)
         }

@@ -72,6 +72,7 @@ CREATE TABLE ticket (
 CREATE TABLE cartela (
     id                  BIGSERIAL       NOT NULL,
     ativa               BOOLEAN         NOT NULL,
+    acumulada           BOOLEAN,
     id_cartela          INTEGER         NOT NULL,
     numeros_sorteados   TEXT,
     valor               DECIMAL         NOT NULL,

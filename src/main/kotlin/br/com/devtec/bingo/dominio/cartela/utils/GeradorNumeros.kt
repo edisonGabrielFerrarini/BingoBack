@@ -5,7 +5,7 @@ import kotlin.random.Random
 
 @Service
 class GeradorNumeros {
-    fun gerarNumeros(): List<Int> {
+    fun gerarNumeros(): String {
         val list: MutableList<Int> = arrayListOf()
         while (list.size < 20){
             var numero = Random.nextInt(1,60)
@@ -19,6 +19,6 @@ class GeradorNumeros {
             }
             list.add(numero)
         }
-        return list.sorted()
+        return list.sorted().toString()
     }
 }
