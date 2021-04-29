@@ -24,7 +24,7 @@ class GanhadorBusiness {
     fun create(numerosSorteados: String, cartela: Cartela): List<Ganhador> {
         val tickets = ticketFacade.getByNumerosAndCartela(numerosSorteados, cartela)
         if (tickets != null) {
-            if (tickets.isNotEmpty()){
+            if (tickets.isNotEmpty()) {
                 val ganhadores = tickets.asSequence().map {
                     ganhadorRepository.save(
                         Ganhador(
@@ -33,9 +33,14 @@ class GanhadorBusiness {
                     )
                 }.toList()
 
+
+                val ganhos = cartela.valor / ganhadores.size
                 ganhadores.forEach {
-                    val ganhos = it.ticket.cartela.valor / ganhadores.size
-                    clienteFacede.updateGanhos(it.ticket.cliente.id, ClienteGanhosDTO(ganhos))
+                    clienteFacede.updateGanhos(
+                        it.ticket.cliente.id, ClienteGanhosDTO(
+                            ganhos = ganhos
+                        )
+                    )
                 }
 
                 return ganhadores

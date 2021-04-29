@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.Query
 interface CartelaRepository: JpaRepository<Cartela, Long> {
     fun findByAtiva(ativa: Boolean) : Cartela?
 
-    fun findByAcumulada(acumulada: Boolean): Cartela
+    fun findByAcumulada(acumulada: Boolean): Cartela?
 }

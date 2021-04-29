@@ -8,7 +8,8 @@ fun CartelaDTO.toEntity() = Cartela(
     ativa = true,
     valor = valor,
     valor_numero = valor_numero,
-    acumulada = false
+    acumulada = false,
+    valor_porcentagem = valor_porcentagem,
 )
 
 fun CartelaDTO.toInativeEntity(id: Long) = Cartela(
@@ -17,5 +18,6 @@ fun CartelaDTO.toInativeEntity(id: Long) = Cartela(
     ativa = false,
     valor = valor,
     valor_numero = valor_numero,
-    acumulada = false
+    acumulada = false,
+    valor_porcentagem = valor_porcentagem
 )

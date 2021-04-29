@@ -5,4 +5,5 @@ data class CartelaDTO(
     val ativa: Boolean,
     val valor: Double,
     val valor_numero: Double,
+    val valor_porcentagem: Int
 )

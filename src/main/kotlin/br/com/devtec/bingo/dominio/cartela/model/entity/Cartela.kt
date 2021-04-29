@@ -22,6 +22,12 @@ data class Cartela(
     val acumulada: Boolean,
 
     @Column(nullable = false)
+    val valor_acumulado: Double = 0.0,
+
+    @Column(nullable = true)
+    val valor_porcentagem: Int,
+
+    @Column(nullable = false)
     val valor: Double,
 
     @Column(nullable = false)

@@ -77,6 +77,8 @@ CREATE TABLE cartela (
     numeros_sorteados   TEXT,
     valor               DECIMAL         NOT NULL,
     valor_numero        DECIMAL         NOT NULL,
+    valor_acumulado     DECIMAL,
+    valor_porcentagem   INTEGER         NOT NULL,
     created_at          TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at          TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

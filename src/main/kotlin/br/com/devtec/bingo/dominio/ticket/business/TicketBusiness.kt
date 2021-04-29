@@ -56,7 +56,7 @@ class TicketBusiness(
                     "saldo insuficiente"
                 }
             }
-            return "erro"
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nenhuma cartela foi encontrada")
         } catch (e: Exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
         }
