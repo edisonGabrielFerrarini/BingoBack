@@ -11,6 +11,7 @@ import br.com.devtec.bingo.dominio.cliente.model.repository.ClienteRepository
 import br.com.devtec.bingo.dominio.cliente.utils.EnumCliente
 import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -30,12 +31,12 @@ class ClienteBusiness {
         return salvarDados(clienteRequestDTO.toEntity(saldo = 0.0, ganhos = 0.0))
     }
 
-    fun getAll(pageable: Pageable): ResponseEntity<List<ClienteResponseDTO>> {
+    fun getAll(pageable: Pageable): Page<ClienteResponseDTO> {
         try {
-            val clientes = clienteRepository.findAll(pageable).asSequence().map {
+            val clientes = clienteRepository.findAll(pageable).map {
                 it.toResponseDTO()
-            }.toList()
-            return ResponseEntity.accepted().body(clientes)
+            }
+            return clientes
         }catch(e: Exception){
             throw PersistirDadosException("erro ao ler dados")
         }

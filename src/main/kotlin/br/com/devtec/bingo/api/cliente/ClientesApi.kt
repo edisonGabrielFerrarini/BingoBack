@@ -6,6 +6,7 @@ import br.com.devtec.bingo.dominio.cliente.dto.ClienteResponseDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
 import br.com.devtec.bingo.dominio.cliente.facade.ClienteFacade
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -23,7 +24,7 @@ class ClientesApi(
     }
 
     @GetMapping
-    fun getAllClients(pageable: Pageable): ResponseEntity<ResponseEntity<List<ClienteResponseDTO>>> {
+    fun getAllClients(pageable: Pageable): ResponseEntity<Page<ClienteResponseDTO>> {
         return ResponseEntity.ok(clienteFacade.getAll(pageable))
     }
 
