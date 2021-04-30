@@ -8,7 +8,8 @@ fun Cartela.toDTO() = CartelaDTO(
     ativa = true,
     valor = valor,
     valor_numero = valor_numero,
-    valor_porcentagem = valor_porcentagem
+    valor_porcentagem = valor_porcentagem,
+    id = id
 )
 
 fun Cartela.toAcumuladoDTO() = CartelaDTO(
@@ -16,5 +17,6 @@ fun Cartela.toAcumuladoDTO() = CartelaDTO(
     ativa = ativa,
     valor = valor,
     valor_numero = valor_numero,
-    valor_porcentagem = valor_porcentagem
+    valor_porcentagem = valor_porcentagem,
+    id = id
 )

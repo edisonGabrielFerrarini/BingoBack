@@ -10,7 +10,9 @@ import br.com.devtec.bingo.dominio.ganhador.model.repository.GanhadorRepository
 import br.com.devtec.bingo.dominio.ticket.facade.TicketFacade
 import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
@@ -25,11 +27,12 @@ class GanhadorBusiness {
     @Autowired
     lateinit var ganhadorRepository: GanhadorRepository
 
-    fun getAll(pageable: Pageable): List<GanhadorDTO> {
+    fun getAll(pageable: Pageable): Page<GanhadorDTO> {
         try {
-            return ganhadorRepository.findAll(pageable).asSequence().map {
+            val ganhadores = ganhadorRepository.findAll(pageable).map {
                 it.toDTO()
-            }.toList()
+            }
+            return ganhadores
         }catch (e: Exception){
             throw PersistirDadosException(e.message!!)
         }

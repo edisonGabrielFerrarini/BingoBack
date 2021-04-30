@@ -3,6 +3,7 @@ package br.com.devtec.bingo.api.ganhador
 import br.com.devtec.bingo.dominio.ganhador.dto.GanhadorDTO
 import br.com.devtec.bingo.dominio.ganhador.facade.GanhadorFacade
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -16,8 +17,8 @@ class GanhadorApi(
     @Autowired private val ganhadorFacade: GanhadorFacade
 ) {
 
-    @GetMapping(value = ["/all"])
-    fun getAll(pageable: Pageable): ResponseEntity<List<GanhadorDTO>> {
+    @GetMapping
+    fun getAll(pageable: Pageable): ResponseEntity<Page<GanhadorDTO>> {
         return ResponseEntity.accepted().body(ganhadorFacade.getAll(pageable))
     }
 

@@ -4,6 +4,7 @@ import br.com.devtec.bingo.dominio.ticket.dto.TicketDTO
 import br.com.devtec.bingo.dominio.ticket.dto.TicketResponseDTO
 import br.com.devtec.bingo.dominio.ticket.facade.TicketFacade
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -21,7 +22,7 @@ class TicketApi(
     }
 
     @GetMapping
-    fun getAll(pageable: Pageable): ResponseEntity<List<TicketResponseDTO>> {
+    fun getAll(pageable: Pageable): ResponseEntity<Page<TicketResponseDTO>> {
         return ticketFacade.getAll(pageable)
     }
 

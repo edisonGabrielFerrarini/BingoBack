@@ -12,6 +12,7 @@ import br.com.devtec.bingo.dominio.ticket.model.entity.Ticket
 import br.com.devtec.bingo.dominio.ticket.model.repository.TicketRepository
 import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -64,11 +65,11 @@ class TicketBusiness(
         }
     }
 
-    fun getAll(pageable: Pageable): ResponseEntity<List<TicketResponseDTO>> {
+    fun getAll(pageable: Pageable): ResponseEntity<Page<TicketResponseDTO>> {
         try {
-            val tickets = ticketRepository.findAll(pageable).asSequence().map {
+            val tickets = ticketRepository.findAll(pageable).map {
                 it.toDTO()
-            }.toList()
+            }
             return ResponseEntity.accepted().body(tickets)
         }catch (e: Exception){
             throw PersistirDadosException("erro ao buscar dados")
