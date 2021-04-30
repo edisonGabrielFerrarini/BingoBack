@@ -1,8 +1,10 @@
 package br.com.devtec.bingo.api.ticket
 
 import br.com.devtec.bingo.dominio.ticket.dto.TicketDTO
+import br.com.devtec.bingo.dominio.ticket.dto.TicketResponseDTO
 import br.com.devtec.bingo.dominio.ticket.facade.TicketFacade
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -13,17 +15,17 @@ class TicketApi(
     @Autowired private val ticketFacade: TicketFacade
 ) {
 
-    @PostMapping(value = ["/create"])
+    @PostMapping
     fun create(@RequestBody ticketDTO: TicketDTO): Any {
         return ticketFacade.create(ticketDTO)
     }
 
-    @GetMapping(value = ["/all"])
-    fun getAll(): ResponseEntity<Any> {
-        return ticketFacade.getAll()
+    @GetMapping
+    fun getAll(pageable: Pageable): ResponseEntity<List<TicketResponseDTO>> {
+        return ticketFacade.getAll(pageable)
     }
 
-    @GetMapping(value = ["/get/{id}"])
+    @GetMapping(value = ["/busca/{id}"])
     fun getByCliente(@PathVariable("id") id: Long ): ResponseEntity<Any> {
         return ticketFacade.getByCliente(id)
     }

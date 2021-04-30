@@ -4,6 +4,7 @@ import br.com.devtec.bingo.dominio.cartela.business.CartelaBusiness
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaDTO
 import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 

@@ -3,6 +3,7 @@ package br.com.devtec.bingo.api.cartela
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaDTO
 import br.com.devtec.bingo.dominio.cartela.facade.CartelaFacade
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -13,22 +14,22 @@ class CartelaApi(
     @Autowired private val cartelaFacade: CartelaFacade
 ) {
 
-    @PostMapping(value = ["/create"])
+    @PostMapping
     fun create(@RequestBody cartelaDTO: CartelaDTO): ResponseEntity<Any> {
         return cartelaFacade.create(cartelaDTO)
     }
 
-    @GetMapping(value = ["/all"])
-    fun get(): ResponseEntity<Any> {
+    @GetMapping
+    fun get(pageable: Pageable): ResponseEntity<Any> {
         return cartelaFacade.getAtiva()
     }
 
-    @GetMapping(value = ["/inativar"])
+    @GetMapping(value = ["/inativa"])
     fun inativarCartela(): ResponseEntity<Any> {
         return cartelaFacade.inativarCartela()
     }
 
-    @GetMapping(value = ["/sortear"])
+    @GetMapping(value = ["/sorteia"])
     fun sortearNumeros(): ResponseEntity<Any> {
         return cartelaFacade.sortear()
     }

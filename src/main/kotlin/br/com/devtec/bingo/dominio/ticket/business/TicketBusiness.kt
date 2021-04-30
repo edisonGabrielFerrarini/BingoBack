@@ -10,7 +10,9 @@ import br.com.devtec.bingo.dominio.ticket.dto.TicketResponseDTO
 import br.com.devtec.bingo.dominio.ticket.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.ticket.model.entity.Ticket
 import br.com.devtec.bingo.dominio.ticket.model.repository.TicketRepository
+import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -62,15 +64,15 @@ class TicketBusiness(
         }
     }
 
-    fun getAll(): ResponseEntity<Any> {
-        var tickets = ticketRepository.findAll()
-        if (tickets.isNotEmpty()) {
-            var ticketsDTO = tickets.asSequence().map {
+    fun getAll(pageable: Pageable): ResponseEntity<List<TicketResponseDTO>> {
+        try {
+            val tickets = ticketRepository.findAll(pageable).asSequence().map {
                 it.toDTO()
             }.toList()
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(ticketsDTO)
+            return ResponseEntity.accepted().body(tickets)
+        }catch (e: Exception){
+            throw PersistirDadosException("erro ao buscar dados")
         }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("não foi encontrado nenhum ticket")
     }
 
     fun getByUser(idCliente: Long): ResponseEntity<Any> {

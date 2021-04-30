@@ -8,7 +8,7 @@ import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
 import br.com.devtec.bingo.dominio.cartela.model.repository.CartelaRepository
 import br.com.devtec.bingo.dominio.cartela.utils.EnumCartela
 import br.com.devtec.bingo.dominio.cartela.utils.GeradorNumeros
-import br.com.devtec.bingo.dominio.cliente.exception.PersistirDadosException
+import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import br.com.devtec.bingo.dominio.ganhador.facade.GanhadorFacade
 import br.com.devtec.bingo.dominio.ganhador.model.entity.Ganhador
 import org.springframework.beans.factory.annotation.Autowired

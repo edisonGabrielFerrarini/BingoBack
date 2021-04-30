@@ -4,14 +4,14 @@ import br.com.devtec.bingo.dominio.cliente.dto.ClienteGanhosDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteRequestDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteResponseDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
-import br.com.devtec.bingo.dominio.cliente.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.cliente.dto.converter.toEntity
 import br.com.devtec.bingo.dominio.cliente.dto.converter.toResponseDTO
-import br.com.devtec.bingo.dominio.cliente.exception.PersistirDadosException
 import br.com.devtec.bingo.dominio.cliente.model.entity.Cliente
 import br.com.devtec.bingo.dominio.cliente.model.repository.ClienteRepository
 import br.com.devtec.bingo.dominio.cliente.utils.EnumCliente
+import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -30,16 +30,15 @@ class ClienteBusiness {
         return salvarDados(clienteRequestDTO.toEntity(saldo = 0.0, ganhos = 0.0))
     }
 
-    fun getAll(): Any {
-        val allClientes = clienteRepository.findAll().asSequence().map {
-            it.toResponseDTO()
-        }.toList()
-
-        if (allClientes.isNotEmpty()) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(allClientes)
+    fun getAll(pageable: Pageable): ResponseEntity<List<ClienteResponseDTO>> {
+        try {
+            val clientes = clienteRepository.findAll(pageable).asSequence().map {
+                it.toResponseDTO()
+            }.toList()
+            return ResponseEntity.accepted().body(clientes)
+        }catch(e: Exception){
+            throw PersistirDadosException("erro ao ler dados")
         }
-
-        return ResponseEntity.status(400).body("não foi encontrado nenhum cliente")
     }
 
 

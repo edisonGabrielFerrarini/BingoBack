@@ -7,6 +7,7 @@ import br.com.devtec.bingo.dominio.cliente.dto.ClienteResponseDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
 import br.com.devtec.bingo.dominio.cliente.model.entity.Cliente
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
@@ -19,8 +20,8 @@ class ClienteFacade {
         return clienteBusiness.create(clienteDTO)
     }
 
-    fun getAll(): Any {
-        return clienteBusiness.getAll()
+    fun getAll(pageable: Pageable): ResponseEntity<List<ClienteResponseDTO>> {
+        return clienteBusiness.getAll(pageable)
     }
 
     fun getById(id: Long): ResponseEntity<Any> {
