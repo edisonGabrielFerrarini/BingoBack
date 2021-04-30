@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import kotlin.math.ceil
 
 @Service
 class GanhadorBusiness {
@@ -51,11 +52,11 @@ class GanhadorBusiness {
                 }.toList()
 
 
-                val ganhos = cartela.valor / ganhadores.size
+                val ganhos = ceil(cartela.valor).toInt() / ganhadores.size
                 ganhadores.forEach {
                     clienteFacede.updateGanhos(
                         it.ticket.cliente.id, ClienteGanhosDTO(
-                            ganhos = ganhos
+                            ganhos = ganhos.toDouble()
                         )
                     )
                 }

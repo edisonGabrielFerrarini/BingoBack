@@ -74,6 +74,7 @@ class ClienteBusiness {
     fun updateGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<Any> {
         try {
             clienteRepository.findById(id).get().let {
+                println(it.ganhos)
                 return salvarDados(
                     it.copy(
                         ganhos = it.ganhos + clienteGanhosDTO.ganhos
