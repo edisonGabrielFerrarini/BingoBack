@@ -7,15 +7,20 @@ import br.com.devtec.bingo.dominio.users.dto.converter.toEntity
 import br.com.devtec.bingo.dominio.users.model.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import java.security.MessageDigest
 
 @Service
-class UsersBusiness {
+class UsersBusiness{
     @Autowired private lateinit var userRepository: UserRepository
     @Autowired private lateinit var clienteFacade: ClienteFacade
 
+
     fun create(usersDTO: UsersDTO): ResponseEntity<ClienteResponseDTO> {
         val user = userRepository.save(usersDTO.toEntity())
+        val senha = BCryptPasswordEncoder().encode(user.password)
+        println(senha)
         return clienteFacade.create(usersDTO.cliente, user)
     }
 
