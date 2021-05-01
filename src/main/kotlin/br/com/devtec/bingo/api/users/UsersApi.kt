@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(value = ["/api/users"], produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(value = ["/signup"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class UsersApi {
 
     @Autowired
     private lateinit var usersFacade: UsersFacade
 
-    @PostMapping("/cadastro")
+    @PostMapping
     fun create(@RequestBody usersDTO: UsersDTO): ResponseEntity<Any> {
         println(usersDTO)
         return ResponseEntity.ok(usersFacade.createCliente(usersDTO))
