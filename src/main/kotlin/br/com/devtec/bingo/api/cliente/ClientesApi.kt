@@ -18,11 +18,6 @@ class ClientesApi(
     @Autowired private val clienteFacade: ClienteFacade
 ) {
 
-    @PostMapping
-    fun create(@RequestBody clienteRequestDTO: ClienteRequestDTO): ResponseEntity<Any> {
-        return ResponseEntity.ok(clienteFacade.create(clienteRequestDTO))
-    }
-
     @GetMapping
     fun getAllClients(pageable: Pageable): ResponseEntity<Page<ClienteResponseDTO>> {
         return ResponseEntity.ok(clienteFacade.getAll(pageable))
@@ -37,7 +32,7 @@ class ClientesApi(
     fun update(
         @PathVariable("id") id: Long,
         @RequestBody clienteRequestDTO: ClienteRequestDTO
-    ): ResponseEntity<Any> {
+    ): ResponseEntity<ClienteResponseDTO> {
         return clienteFacade.update(id, clienteRequestDTO)
     }
 
@@ -45,7 +40,7 @@ class ClientesApi(
     fun updateCreditos(
         @PathVariable("id") id: Long,
         @RequestBody clienteSaldoDTO: ClienteSaldoDTO
-    ): ResponseEntity<Any> {
+    ): ResponseEntity<ClienteResponseDTO> {
         return clienteFacade.updateSaldo(id, clienteSaldoDTO)
     }
 

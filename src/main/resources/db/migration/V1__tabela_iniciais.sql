@@ -1,12 +1,10 @@
 CREATE TABLE cliente (
     id              BIGSERIAL   NOT NULL,
-    id_usuario      INTEGER     NOT NULL,
+    id_users        INTEGER     NOT NULL,
     nome            VARCHAR(60) NOT NULL,
     telefone        VARCHAR(30),
     celular         VARCHAR(30),
     cpf             VARCHAR(20)     NOT NULL,
-    senha           VARCHAR(255)    NOT NULL,
-    email           VARCHAR(150)    NOT NULL,
     saldo           DECIMAL,
     ganhos          DECIMAL,
     cidade          VARCHAR(150),
@@ -43,10 +41,9 @@ CREATE TABLE gerente (
     updated_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
-CREATE TABLE usuario (
+CREATE TABLE users (
     id              BIGSERIAL       NOT NULL,
-    tipo_cadastro   INTEGER         NOT NULL,
-    senha           VARCHAR(60)     NOT NULL,
+    password        VARCHAR(60)     NOT NULL,
     email           VARCHAR(120)    NOT NULL,
     created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL

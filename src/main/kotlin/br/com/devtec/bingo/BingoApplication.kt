@@ -9,3 +9,4 @@ class BingoApplication
 fun main(args: Array<String>) {
 	runApplication<BingoApplication>(*args)
 }
+

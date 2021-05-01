@@ -4,11 +4,11 @@ import br.com.devtec.bingo.dominio.cliente.dto.ClienteGanhosDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteRequestDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteResponseDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
-import br.com.devtec.bingo.dominio.cliente.dto.converter.toEntity
 import br.com.devtec.bingo.dominio.cliente.dto.converter.toResponseDTO
 import br.com.devtec.bingo.dominio.cliente.model.entity.Cliente
 import br.com.devtec.bingo.dominio.cliente.model.repository.ClienteRepository
 import br.com.devtec.bingo.dominio.cliente.utils.EnumCliente
+import br.com.devtec.bingo.dominio.users.model.entity.Users
 import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import java.util.Objects.nonNull
 
 @Service
 class ClienteBusiness {
@@ -24,11 +23,20 @@ class ClienteBusiness {
     @Autowired
     lateinit var clienteRepository: ClienteRepository
 
-    fun create(clienteRequestDTO: ClienteRequestDTO): Any {
-        clienteRepository.findByCpf(clienteRequestDTO.cpf)?.run {
-            return ResponseEntity.status(400).body("Não foi possivel cadastrar este cliente, pois já esta cadastrado.")
-        }
-        return salvarDados(clienteRequestDTO.toEntity(saldo = 0.0, ganhos = 0.0))
+    fun create(clienteRequestDTO: ClienteRequestDTO, users: Users): ResponseEntity<ClienteResponseDTO> {
+        return salvarDados(
+            Cliente(
+                cpf = clienteRequestDTO.cpf,
+                nome = clienteRequestDTO.nome,
+                cidade = clienteRequestDTO.cidade,
+                estado = clienteRequestDTO.estado,
+                celular = clienteRequestDTO.celular,
+                telefone = clienteRequestDTO.telefone,
+                ganhos = 0.0,
+                saldo = 0.0,
+                users = users
+            )
+        )
     }
 
     fun getAll(pageable: Pageable): Page<ClienteResponseDTO> {
@@ -37,7 +45,7 @@ class ClienteBusiness {
                 it.toResponseDTO()
             }
             return clientes
-        }catch(e: Exception){
+        } catch (e: Exception) {
             throw PersistirDadosException("erro ao ler dados")
         }
     }
@@ -50,14 +58,27 @@ class ClienteBusiness {
         return ResponseEntity.status(400).body(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
     }
 
-    fun update(id: Long, clienteRequestDTO: ClienteRequestDTO): ResponseEntity<Any> {
-        if (clienteRepository.existsById(id)) {
-            return salvarDados(clienteRequestDTO.toEntity(id))
+    fun update(id: Long, clienteRequestDTO: ClienteRequestDTO): ResponseEntity<ClienteResponseDTO> {
+        try {
+            val cliente = clienteRepository.findById(id).get()
+            return salvarDados(
+                cliente.copy(
+                    nome = clienteRequestDTO.nome,
+                    telefone = clienteRequestDTO.telefone,
+                    celular = clienteRequestDTO.celular,
+                    cpf = clienteRequestDTO.cpf,
+                    ganhos = clienteRequestDTO.ganhos,
+                    saldo = clienteRequestDTO.saldo,
+                    cidade = clienteRequestDTO.cidade,
+                    estado = clienteRequestDTO.estado
+                )
+            )
+        } catch (e: Exception) {
+            throw PersistirDadosException("erro ao persistir os dados no banco de dados")
         }
-        return ResponseEntity.status(400).body(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
     }
 
-    fun updateSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
+    fun updateSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<ClienteResponseDTO> {
         try {
             clienteRepository.findById(id).get().let {
                 return salvarDados(
@@ -66,12 +87,12 @@ class ClienteBusiness {
                     )
                 )
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             throw PersistirDadosException(EnumCliente.ERRO_AO_PERSISTIR_DADOS.erro)
         }
     }
 
-    fun updateGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<Any> {
+    fun updateGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<ClienteResponseDTO> {
         try {
             clienteRepository.findById(id).get().let {
                 println(it.ganhos)
@@ -81,62 +102,60 @@ class ClienteBusiness {
                     )
                 )
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             throw PersistirDadosException(EnumCliente.ERRO_AO_PERSISTIR_DADOS.erro)
         }
     }
 
     fun debitarSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
-        val cliente = clienteRepository.findById(id).get()
-        if (nonNull(cliente)) {
+        try {
+            val cliente = clienteRepository.findById(id).get()
             return if (verificarSaldo(cliente.saldo, clienteSaldoDTO.saldo)) {
-                salvarDados(
+                val save = salvarDados(
                     cliente.copy(
                         saldo = cliente.saldo - clienteSaldoDTO.saldo
                     )
                 )
-            }else {
+                ResponseEntity.accepted().body(save)
+            } else {
                 ResponseEntity.status(400).body("saldo insuficiente")
             }
+        } catch (e: Exception) {
+            throw PersistirDadosException(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
         }
-        return ResponseEntity.status(400).body(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
     }
 
-    fun debitarGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<Any> {
-        val cliente = getByID(id).body as Cliente
-        if (nonNull(cliente)) {
+    fun debitarGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<ClienteResponseDTO> {
+        try {
+            val cliente = getByID(id).body as Cliente
             return salvarDados(
                 cliente.copy(
                     ganhos = cliente.ganhos - clienteGanhosDTO.ganhos
                 )
             )
+        } catch (e: Exception) {
+            throw PersistirDadosException(EnumCliente.ERRO_AO_PERSISTIR_DADOS.erro)
         }
-        return ResponseEntity.status(400).body(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
     }
 
-    fun salvarDados(cliente: Cliente): ResponseEntity<Any> {
+    fun salvarDados(cliente: Cliente): ResponseEntity<ClienteResponseDTO> {
         try {
             clienteRepository.save(cliente).let {
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body(it.toResponseDTO())
             }
-        }catch (e: Exception){
-            throw e.message?.let { PersistirDadosException(it) }!!
+        } catch (e: Exception) {
+            throw PersistirDadosException(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
         }
     }
-
 
     fun getByID(id: Long): ResponseEntity<Any> {
-        try {
+        return try {
             val cliente = clienteRepository.findById(id).get()
-            if (nonNull(cliente)) {
-                return ResponseEntity.status(HttpStatus.ACCEPTED).body(cliente)
-            }
-        }catch (e: Exception){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
+            ResponseEntity.status(HttpStatus.ACCEPTED).body(cliente)
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Não foi possivel encontrar este cliente")
     }
-
 
     fun verificarSaldo(saldo: Double, saldoDebitar: Double): Boolean {
         val saldoAtualizado = saldo - saldoDebitar

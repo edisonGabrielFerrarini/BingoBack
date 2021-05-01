@@ -6,8 +6,6 @@ data class ClienteRequestDTO(
     val celular: String,
     val cpf: String,
     val ganhos: Double,
-    val email: String,
-    val senha: String,
     val saldo: Double,
     val cidade: String,
     val estado: String

@@ -6,6 +6,7 @@ import br.com.devtec.bingo.dominio.cliente.dto.ClienteRequestDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteResponseDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
 import br.com.devtec.bingo.dominio.cliente.model.entity.Cliente
+import br.com.devtec.bingo.dominio.users.model.entity.Users
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -17,8 +18,8 @@ class ClienteFacade {
     @Autowired
     lateinit var clienteBusiness: ClienteBusiness
 
-    fun create(clienteDTO: ClienteRequestDTO): Any {
-        return clienteBusiness.create(clienteDTO)
+    fun create(clienteDTO: ClienteRequestDTO, users: Users): ResponseEntity<ClienteResponseDTO> {
+        return clienteBusiness.create(clienteDTO, users)
     }
 
     fun getAll(pageable: Pageable): Page<ClienteResponseDTO> {
@@ -33,15 +34,15 @@ class ClienteFacade {
         return clienteBusiness.getByCpf(cpf)
     }
 
-    fun update(id: Long, clienteDTO: ClienteRequestDTO): ResponseEntity<Any> {
+    fun update(id: Long, clienteDTO: ClienteRequestDTO): ResponseEntity<ClienteResponseDTO> {
         return clienteBusiness.update(id, clienteDTO)
     }
 
-    fun updateSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
+    fun updateSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<ClienteResponseDTO> {
         return clienteBusiness.updateSaldo(id, clienteSaldoDTO)
     }
 
-    fun updateGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<Any> {
+    fun updateGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<ClienteResponseDTO> {
         return clienteBusiness.updateGanhos(id, clienteGanhosDTO)
     }
 
@@ -49,7 +50,7 @@ class ClienteFacade {
         return clienteBusiness.debitarSaldo(id, clienteSaldoDTO)
     }
 
-    fun debitarGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<Any> {
+    fun debitarGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<ClienteResponseDTO> {
         return clienteBusiness.debitarGanhos(id, clienteGanhosDTO)
     }
 }

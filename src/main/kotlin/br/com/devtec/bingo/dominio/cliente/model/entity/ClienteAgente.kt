@@ -1,5 +1,6 @@
 package br.com.devtec.bingo.dominio.cliente.model.entity
 
+import br.com.devtec.bingo.dominio.users.model.entity.Users
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -13,7 +14,7 @@ data class ClienteAgente(
     val id: Long = 0,
 
     @OneToOne(fetch = FetchType.LAZY)
-    val usuario: Usuario,
+    val users: Users,
 
     @OneToOne(fetch = FetchType.LAZY)
     var gerente: Gerente,

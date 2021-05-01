@@ -1,5 +1,6 @@
 package br.com.devtec.bingo.dominio.cliente.model.entity
 
+import br.com.devtec.bingo.dominio.users.model.entity.Users
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -11,6 +12,9 @@ data class Cliente(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "serial")
     var id: Long = 0,
+
+    @OneToOne(fetch = FetchType.LAZY)
+    val users: Users,
 
     @Column(length = 60, nullable = false)
     val nome: String,
@@ -32,12 +36,6 @@ data class Cliente(
 
     @Column(length = 150, nullable = true)
     val cidade: String,
-
-    @Column(length = 255, nullable = false)
-    val senha: String,
-
-    @Column(length = 150, nullable = false)
-    val email: String,
 
     @Column(length = 100, nullable = true)
     val estado: String,
