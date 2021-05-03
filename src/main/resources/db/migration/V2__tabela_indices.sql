@@ -71,3 +71,13 @@ FOREIGN KEY (id_cliente) REFERENCES cliente (id);
 ALTER TABLE cliente_agente
 ADD CONSTRAINT cliente_agente_fk
 FOREIGN KEY (id_agente) REFERENCES agente (id);
+
+--=========================================================
+-- CLIENTE_AGENTE
+--=========================================================
+
+ALTER TABLE users ADD CONSTRAINT users_pk PRIMARY KEY(id);
+
+ALTER TABLE users
+ADD CONSTRAINT users__roles_fk
+FOREIGN KEY (nomeRoles) REFERENCES rules (nomeRoles);

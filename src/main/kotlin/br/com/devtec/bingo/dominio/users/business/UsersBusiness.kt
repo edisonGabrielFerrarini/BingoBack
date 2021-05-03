@@ -12,15 +12,19 @@ import org.springframework.stereotype.Service
 import java.security.MessageDigest
 
 @Service
-class UsersBusiness{
-    @Autowired private lateinit var userRepository: UserRepository
-    @Autowired private lateinit var clienteFacade: ClienteFacade
+class UsersBusiness {
+    @Autowired
+    private lateinit var userRepository: UserRepository
+    @Autowired
+    private lateinit var clienteFacade: ClienteFacade
 
 
     fun create(usersDTO: UsersDTO): ResponseEntity<ClienteResponseDTO> {
-        val user = userRepository.save(usersDTO.toEntity())
-        val senha = BCryptPasswordEncoder().encode(user.password)
-        println(senha)
+        val user = userRepository.save(
+            usersDTO.toEntity(
+                BCryptPasswordEncoder().encode(usersDTO.senha)
+            )
+        )
         return clienteFacade.create(usersDTO.cliente, user)
     }
 

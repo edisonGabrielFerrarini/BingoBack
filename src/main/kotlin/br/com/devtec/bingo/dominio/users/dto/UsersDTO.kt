@@ -4,6 +4,6 @@ import br.com.devtec.bingo.dominio.cliente.dto.ClienteRequestDTO
 
 data class UsersDTO(
     val email: String,
-    val password: String,
+    val senha: String,
     val cliente: ClienteRequestDTO
 )

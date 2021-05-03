@@ -13,6 +13,10 @@ CREATE TABLE cliente (
     updated_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
+CREATE TABLE roles (
+    nomeRoles     String   NOT NULL,
+);
+
 CREATE TABLE agente (
     id              BIGSERIAL   NOT NULL,
     id_usuario          INTEGER     NOT NULL,
@@ -45,6 +49,7 @@ CREATE TABLE users (
     id              BIGSERIAL       NOT NULL,
     password        VARCHAR(60)     NOT NULL,
     email           VARCHAR(120)    NOT NULL,
+    roles           TEXT,
     created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
