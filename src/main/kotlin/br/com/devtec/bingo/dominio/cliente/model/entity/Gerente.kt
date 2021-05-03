@@ -13,9 +13,6 @@ data class Gerente(
     @Column(columnDefinition = "serial")
     val id: Long = 0,
 
-    @OneToOne(fetch = FetchType.LAZY)
-    val users: Users,
-
     @Column(length = 60, nullable = false)
     val nome: String,
 

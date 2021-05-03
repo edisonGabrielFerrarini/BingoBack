@@ -14,9 +14,6 @@ data class ClienteAgente(
     val id: Long = 0,
 
     @OneToOne(fetch = FetchType.LAZY)
-    val users: Users,
-
-    @OneToOne(fetch = FetchType.LAZY)
     var gerente: Gerente,
 
     @CreatedDate

@@ -30,8 +30,8 @@ class ClienteFacade {
         return clienteBusiness.getByID(id)
     }
 
-    fun getByCpf(cpf: String): Any? {
-        return clienteBusiness.getByCpf(cpf)
+    fun buscarPorID(id: Long): Any? {
+        return clienteBusiness.buscarPorID(id)
     }
 
     fun update(id: Long, clienteDTO: ClienteRequestDTO): ResponseEntity<ClienteResponseDTO> {

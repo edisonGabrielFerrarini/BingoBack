@@ -1,6 +1,6 @@
 CREATE TABLE cliente (
     id              BIGSERIAL   NOT NULL,
-    id_users        INTEGER     NOT NULL,
+    id_users        String     NOT NULL,
     nome            VARCHAR(60) NOT NULL,
     telefone        VARCHAR(30),
     celular         VARCHAR(30),
@@ -19,7 +19,6 @@ CREATE TABLE roles (
 
 CREATE TABLE agente (
     id              BIGSERIAL   NOT NULL,
-    id_usuario          INTEGER     NOT NULL,
     id_gerente          INTEGER     NOT NULL,
     nome                VARCHAR(60) NOT NULL,
     cpf                 VARCHAR(20) NOT NULL,
@@ -34,7 +33,6 @@ CREATE TABLE agente (
 
 CREATE TABLE gerente (
     id              BIGSERIAL   NOT NULL,
-    id_usuario      INTEGER     NOT NULL,
     nome            VARCHAR(60) NOT NULL,
     cpf             VARCHAR(20) NOT NULL,
     telefone        VARCHAR(30),
@@ -46,7 +44,6 @@ CREATE TABLE gerente (
 );
 
 CREATE TABLE users (
-    id              BIGSERIAL       NOT NULL,
     password        VARCHAR(60)     NOT NULL,
     email           VARCHAR(120)    NOT NULL,
     roles           TEXT,

@@ -22,6 +22,6 @@ class ImplementsUserDetailsService : UserDetailsService {
     @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(email: String): UserDetails {
         val usuario = userRepository.findByEmail(email) ?: throw UsernameNotFoundException("Usuario não encontrado!")
-        return Users(usuario.id, usuario.email, usuario.senha, usuario.roles,usuario.created_at, usuario.updated_at)
+        return Users(usuario.email, usuario.senha, usuario.roles,usuario.created_at, usuario.updated_at)
     }
 }

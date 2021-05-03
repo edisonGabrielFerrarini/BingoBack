@@ -23,9 +23,9 @@ class ClientesApi(
         return ResponseEntity.ok(clienteFacade.getAll(pageable))
     }
 
-    @GetMapping(value = ["/busca/{cpf}"])
-    fun getByCpf(@PathVariable("cpf") cpf: String): ResponseEntity<Any> {
-        return ResponseEntity.ok(clienteFacade.getByCpf(cpf))
+    @GetMapping(value = ["/busca/{id}"])
+    fun getByCpf(@PathVariable("id") id: Long): ResponseEntity<Any> {
+        return ResponseEntity.ok(clienteFacade.buscarPorID(id))
     }
 
     @PutMapping(value = ["/update/{id}"])

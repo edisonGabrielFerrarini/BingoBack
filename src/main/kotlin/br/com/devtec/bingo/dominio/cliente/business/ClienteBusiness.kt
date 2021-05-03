@@ -24,6 +24,10 @@ class ClienteBusiness {
     lateinit var clienteRepository: ClienteRepository
 
     fun create(clienteRequestDTO: ClienteRequestDTO, users: Users): ResponseEntity<ClienteResponseDTO> {
+        if(clienteRepository.findByCpf(clienteRequestDTO.cpf) != null){
+            throw PersistirDadosException("Cliente já cadastrado")
+        }
+
         return salvarDados(
             Cliente(
                 cpf = clienteRequestDTO.cpf,
@@ -51,9 +55,9 @@ class ClienteBusiness {
     }
 
 
-    fun getByCpf(cpf: String): Any? {
-        clienteRepository.findByCpf(cpf)?.let {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(it.toResponseDTO())
+    fun buscarPorID(id: Long): ResponseEntity<Any> {
+        clienteRepository.findById(id). let {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(it.get().toResponseDTO())
         }
         return ResponseEntity.status(400).body(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
     }

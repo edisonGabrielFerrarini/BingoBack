@@ -56,7 +56,7 @@ ALTER TABLE cliente ADD CONSTRAINT cliente_pk PRIMARY KEY(id);
 
 ALTER TABLE cliente
 ADD CONSTRAINT cliente__users_fk
-FOREIGN KEY (id_users) REFERENCES users (id);
+FOREIGN KEY (id_users) REFERENCES users (email);
 
 --=========================================================
 -- CLIENTE_AGENTE
@@ -76,7 +76,7 @@ FOREIGN KEY (id_agente) REFERENCES agente (id);
 -- CLIENTE_AGENTE
 --=========================================================
 
-ALTER TABLE users ADD CONSTRAINT users_pk PRIMARY KEY(id);
+ALTER TABLE users ADD CONSTRAINT users_pk PRIMARY KEY(email);
 
 ALTER TABLE users
 ADD CONSTRAINT users__roles_fk
