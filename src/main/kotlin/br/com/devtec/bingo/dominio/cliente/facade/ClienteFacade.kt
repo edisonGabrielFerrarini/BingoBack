@@ -30,8 +30,8 @@ class ClienteFacade {
         return clienteBusiness.getByID(id)
     }
 
-    fun buscarPorID(id: Long): Any? {
-        return clienteBusiness.buscarPorID(id)
+    fun buscarPorID(id: Long, isNotAdmin: Boolean = true): Any? {
+        return clienteBusiness.buscarPorID(id, isNotAdmin)
     }
 
     fun update(id: Long, clienteDTO: ClienteRequestDTO): ResponseEntity<ClienteResponseDTO> {

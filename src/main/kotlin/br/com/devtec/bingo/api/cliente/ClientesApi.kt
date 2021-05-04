@@ -24,8 +24,13 @@ class ClientesApi(
     }
 
     @GetMapping(value = ["/busca/{id}"])
-    fun getByCpf(@PathVariable("id") id: Long): ResponseEntity<Any> {
+    fun getByID(@PathVariable("id") id: Long): ResponseEntity<Any> {
         return ResponseEntity.ok(clienteFacade.buscarPorID(id))
+    }
+
+    @GetMapping(value = ["/admin/busca/{id}"])
+    fun getByIDAdmin(@PathVariable("id") id: Long): ResponseEntity<Any> {
+        return ResponseEntity.ok(clienteFacade.buscarPorID(id, false))
     }
 
     @PutMapping(value = ["/update/{id}"])

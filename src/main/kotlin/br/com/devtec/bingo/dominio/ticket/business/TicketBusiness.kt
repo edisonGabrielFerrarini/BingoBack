@@ -10,12 +10,15 @@ import br.com.devtec.bingo.dominio.ticket.dto.TicketResponseDTO
 import br.com.devtec.bingo.dominio.ticket.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.ticket.model.entity.Ticket
 import br.com.devtec.bingo.dominio.ticket.model.repository.TicketRepository
+import br.com.devtec.bingo.dominio.users.model.entity.Users
 import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
+import br.com.devtec.bingo.dominio.utils.exception.UsuarioIncorretoException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
@@ -34,7 +37,7 @@ class TicketBusiness(
             val cartela = cartelaFacade.getByAtiva()
 
 
-            if (cliente != null && cartela != null) {
+            if (cartela != null) {
                 val valorTotal = cartela.valor_numero * 20
 
                 val statusCode = clienteFacade.debitarSaldo(
@@ -77,10 +80,10 @@ class TicketBusiness(
     }
 
     fun getByUser(idCliente: Long): ResponseEntity<Any> {
-        var tickets = ticketRepository.findByClienteId(idCliente)
-        if (tickets != null) {
+        val tickets = ticketRepository.findByClienteId(idCliente)
+        if (tickets != null && tickets.isNotEmpty()) {
+            verificarSeUsuarioEstaLogadoCorretamente(tickets[1].cliente.users.email)
             val ticketsDTO = tickets.asSequence().map { it.toDTO() }.toList()
-
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(ticketsDTO)
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao encontrar ticket")
@@ -91,6 +94,13 @@ class TicketBusiness(
             return ticketRepository.findByNumerosAndCartelaId(numerosSorteados, cartela)
         }catch (e: Exception){
             throw Exception(e)
+        }
+    }
+
+    fun verificarSeUsuarioEstaLogadoCorretamente(email: String){
+        val auth = SecurityContextHolder.getContext().authentication.principal as Users
+        if (email != auth.email){
+            throw UsuarioIncorretoException("Usuario logado é diferente do usuario solicitado")
         }
     }
 

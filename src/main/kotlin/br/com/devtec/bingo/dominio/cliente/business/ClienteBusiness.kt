@@ -10,11 +10,13 @@ import br.com.devtec.bingo.dominio.cliente.model.repository.ClienteRepository
 import br.com.devtec.bingo.dominio.cliente.utils.EnumCliente
 import br.com.devtec.bingo.dominio.users.model.entity.Users
 import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
+import br.com.devtec.bingo.dominio.utils.exception.UsuarioIncorretoException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
@@ -45,26 +47,29 @@ class ClienteBusiness {
 
     fun getAll(pageable: Pageable): Page<ClienteResponseDTO> {
         try {
-            val clientes = clienteRepository.findAll(pageable).map {
+            return clienteRepository.findAll(pageable).map {
                 it.toResponseDTO()
             }
-            return clientes
         } catch (e: Exception) {
             throw PersistirDadosException("erro ao ler dados")
         }
     }
 
 
-    fun buscarPorID(id: Long): ResponseEntity<Any> {
+    fun buscarPorID(id: Long, isNotAdmin: Boolean = true): ResponseEntity<Any> {
         clienteRepository.findById(id). let {
+            if (isNotAdmin){
+                verificarSeUsuarioEstaLogadoCorretamente(it.get().users.email)
+            }
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(it.get().toResponseDTO())
         }
-        return ResponseEntity.status(400).body(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
     }
+
 
     fun update(id: Long, clienteRequestDTO: ClienteRequestDTO): ResponseEntity<ClienteResponseDTO> {
         try {
             val cliente = clienteRepository.findById(id).get()
+            verificarSeUsuarioEstaLogadoCorretamente(cliente.users.email)
             return salvarDados(
                 cliente.copy(
                     nome = clienteRequestDTO.nome,
@@ -85,6 +90,7 @@ class ClienteBusiness {
     fun updateSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<ClienteResponseDTO> {
         try {
             clienteRepository.findById(id).get().let {
+                verificarSeUsuarioEstaLogadoCorretamente(it.users.email)
                 return salvarDados(
                     it.copy(
                         saldo = it.saldo + clienteSaldoDTO.saldo
@@ -164,6 +170,13 @@ class ClienteBusiness {
     fun verificarSaldo(saldo: Double, saldoDebitar: Double): Boolean {
         val saldoAtualizado = saldo - saldoDebitar
         return saldoAtualizado >= 0
+    }
+
+    fun verificarSeUsuarioEstaLogadoCorretamente(email: String){
+        val auth = SecurityContextHolder.getContext().authentication.principal as Users
+        if (email != auth.email){
+            throw UsuarioIncorretoException("Usuario logado é diferente do usuario solicitado")
+        }
     }
 
 }
