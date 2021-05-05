@@ -23,6 +23,7 @@ class ClientesApi(
         return ResponseEntity.ok(clienteFacade.getAll(pageable))
     }
 
+    @CrossOrigin(origins = ["http://localhost:8081"])
     @GetMapping(value = ["/busca/{id}"])
     fun getByID(@PathVariable("id") id: Long): ResponseEntity<Any> {
         return ResponseEntity.ok(clienteFacade.buscarPorID(id))

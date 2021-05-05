@@ -1,25 +1,18 @@
 package br.com.devtec.bingo.config
 
-import org.springframework.security.config.annotation.web.builders.WebSecurity
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-
-import org.springframework.http.HttpMethod
-
-import org.springframework.security.config.annotation.web.builders.HttpSecurity
-
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-
+import org.springframework.http.HttpMethod
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.core.userdetails.UserDetailsService
-import java.lang.Exception
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 
 @Configuration
@@ -30,7 +23,10 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http.csrf().disable().authorizeRequests()
+        http
+            .cors()
+            .and()
+            .httpBasic().and().authorizeRequests()
             .antMatchers(HttpMethod.POST, "/api/users/cadastro").permitAll()
             .antMatchers(HttpMethod.GET, "/api/cartela").permitAll()
             .antMatchers(HttpMethod.POST, "/api/cartela").hasRole("ADMIN")
@@ -45,9 +41,8 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.GET, "/api/cliente/busca/{id}").hasRole("USER")
             .antMatchers(HttpMethod.GET, "/api/cliente/admin/busca/{id}").hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/api/cliente/update/saldo/{id}").hasRole("ADMIN")
-            .anyRequest().authenticated()
-            .and().formLogin().permitAll()
-            .and().logout().logoutRequestMatcher(AntPathRequestMatcher("/logout"))
+            .and().csrf().disable()
+            .formLogin().disable()
     }
 
     @Throws(Exception::class)
@@ -55,6 +50,8 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         auth.userDetailsService(userDetailsService)
             .passwordEncoder(BCryptPasswordEncoder())
     }
+
+
 
     @Throws(Exception::class)
     override fun configure(web: WebSecurity) {
