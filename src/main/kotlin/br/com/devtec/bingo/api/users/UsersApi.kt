@@ -1,6 +1,7 @@
 package br.com.devtec.bingo.api.users
 
 import br.com.devtec.bingo.dominio.users.dto.UsersDTO
+import br.com.devtec.bingo.dominio.users.dto.UsersLoginDTO
 import br.com.devtec.bingo.dominio.users.facade.UsersFacade
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -19,8 +20,12 @@ class UsersApi {
 
     @PostMapping("/cadastro")
     fun create(@RequestBody usersDTO: UsersDTO): ResponseEntity<Any> {
-        println(usersDTO)
         return ResponseEntity.ok(usersFacade.createCliente(usersDTO))
+    }
+
+    @PostMapping("/login")
+    fun login(@RequestBody usersLoginDTO: UsersLoginDTO): ResponseEntity<Any> {
+        return usersFacade.login(usersLoginDTO)
     }
 
 }

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@CrossOrigin(origins = ["http://192.168.0.11:8081"])
 @RequestMapping(value = ["/api/cliente"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class ClientesApi(
     @Autowired private val clienteFacade: ClienteFacade
@@ -23,7 +24,6 @@ class ClientesApi(
         return ResponseEntity.ok(clienteFacade.getAll(pageable))
     }
 
-    @CrossOrigin(origins = ["http://localhost:8081"])
     @GetMapping(value = ["/busca/{id}"])
     fun getByID(@PathVariable("id") id: Long): ResponseEntity<Any> {
         return ResponseEntity.ok(clienteFacade.buscarPorID(id))

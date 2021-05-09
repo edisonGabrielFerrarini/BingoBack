@@ -90,7 +90,6 @@ class ClienteBusiness {
     fun updateSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<ClienteResponseDTO> {
         try {
             clienteRepository.findById(id).get().let {
-                verificarSeUsuarioEstaLogadoCorretamente(it.users.email)
                 return salvarDados(
                     it.copy(
                         saldo = it.saldo + clienteSaldoDTO.saldo
@@ -176,6 +175,14 @@ class ClienteBusiness {
         val auth = SecurityContextHolder.getContext().authentication.principal as Users
         if (email != auth.email){
             throw UsuarioIncorretoException("Usuario logado é diferente do usuario solicitado")
+        }
+    }
+
+    fun getByUser(users: Users): Cliente {
+        try {
+            return clienteRepository.findByUsers(users)
+        }catch (e: Exception){
+            throw PersistirDadosException("Erro ao encontrar cliente")
         }
     }
 

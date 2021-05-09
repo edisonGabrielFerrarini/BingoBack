@@ -1,10 +1,14 @@
 package br.com.devtec.bingo.dominio.users.business
 
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteResponseDTO
+import br.com.devtec.bingo.dominio.cliente.dto.converter.toResponseDTO
 import br.com.devtec.bingo.dominio.cliente.facade.ClienteFacade
+import br.com.devtec.bingo.dominio.users.dto.UsersAdminDTO
 import br.com.devtec.bingo.dominio.users.dto.UsersDTO
+import br.com.devtec.bingo.dominio.users.dto.UsersLoginDTO
 import br.com.devtec.bingo.dominio.users.dto.converter.toEntity
 import br.com.devtec.bingo.dominio.users.model.repository.UserRepository
+import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -15,17 +19,41 @@ import java.security.MessageDigest
 class UsersBusiness {
     @Autowired
     private lateinit var userRepository: UserRepository
+
     @Autowired
     private lateinit var clienteFacade: ClienteFacade
 
 
     fun create(usersDTO: UsersDTO): ResponseEntity<ClienteResponseDTO> {
-        val user = userRepository.save(
-            usersDTO.toEntity(
-                BCryptPasswordEncoder().encode(usersDTO.senha)
+        try {
+            val user = userRepository.save(
+                usersDTO.toEntity(
+                    BCryptPasswordEncoder().encode(usersDTO.senha)
+                )
+            )
+            return clienteFacade.create(usersDTO.cliente, user)
+        } catch (e: Exception) {
+            throw PersistirDadosException("erro ao salvar usuario")
+        }
+    }
+
+    fun createAdmin(usersAdminDTO: UsersAdminDTO) {
+        val save = userRepository.save(
+            usersAdminDTO.toEntity(
+                BCryptPasswordEncoder().encode(usersAdminDTO.senha)
             )
         )
-        return clienteFacade.create(usersDTO.cliente, user)
     }
+
+    fun login(usersLoginDTO: UsersLoginDTO): ResponseEntity<Any> {
+        val user = userRepository.findByEmail(usersLoginDTO.email)
+        if (user != null){
+            println(user.toString())
+            val cliente = clienteFacade.getByUser(user)
+            return ResponseEntity.ok().body(cliente.toResponseDTO())
+        }
+        return ResponseEntity.status(400).body("erro ao buscar usuario")
+    }
+
 
 }

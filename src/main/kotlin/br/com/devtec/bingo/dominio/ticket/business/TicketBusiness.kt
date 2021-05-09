@@ -36,7 +36,6 @@ class TicketBusiness(
             val cliente = clienteFacade.getById(ticketDTO.id_cliente).body as Cliente
             val cartela = cartelaFacade.getByAtiva()
 
-
             if (cartela != null) {
                 val valorTotal = cartela.valor_numero * 20
 

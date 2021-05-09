@@ -7,3 +7,7 @@ data class UsersDTO(
     val senha: String,
     val cliente: ClienteRequestDTO
 )
+
+data class UsersLoginDTO(
+    val email: String,
+)

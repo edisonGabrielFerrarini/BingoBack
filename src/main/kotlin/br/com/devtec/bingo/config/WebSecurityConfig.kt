@@ -28,14 +28,15 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .and()
             .httpBasic().and().authorizeRequests()
             .antMatchers(HttpMethod.POST, "/api/users/cadastro").permitAll()
-            .antMatchers(HttpMethod.GET, "/api/cartela").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/users/login").hasAnyRole("USER")
+            .antMatchers(HttpMethod.GET, "/api/cartela").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.POST, "/api/cartela").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/cartela/inativa").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/cartela/sorteia").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/ganhador").hasRole("USER")
             .antMatchers(HttpMethod.GET, "/api/ticket/busca/{id}").hasRole("USER")
             .antMatchers(HttpMethod.GET, "/api/ticket").hasRole("ADMIN")
-            .antMatchers(HttpMethod.POST, "/api/ticket").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/ticket").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.GET, "/api/cliente").hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/api/cliente/update/{id}").hasRole("USER")
             .antMatchers(HttpMethod.GET, "/api/cliente/busca/{id}").hasRole("USER")
@@ -51,6 +52,14 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .passwordEncoder(BCryptPasswordEncoder())
     }
 
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource? {
+        val configuration = CorsConfiguration().applyPermitDefaultValues()
+        configuration.allowedMethods = listOf("POST", "GET", "PUT", "DELETE", "OPTIONS")
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
+    }
 
 
     @Throws(Exception::class)

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@CrossOrigin(origins = ["http://192.168.0.11:8081"])
 @RequestMapping(value = ["api/cartela"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class CartelaApi(
     @Autowired private val cartelaFacade: CartelaFacade

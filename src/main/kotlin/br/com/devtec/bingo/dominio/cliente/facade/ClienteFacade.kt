@@ -53,4 +53,8 @@ class ClienteFacade {
     fun debitarGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<ClienteResponseDTO> {
         return clienteBusiness.debitarGanhos(id, clienteGanhosDTO)
     }
+
+    fun getByUser(users: Users): Cliente {
+        return clienteBusiness.getByUser(users)
+    }
 }
