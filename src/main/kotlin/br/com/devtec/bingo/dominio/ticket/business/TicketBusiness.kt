@@ -82,7 +82,9 @@ class TicketBusiness(
         val tickets = ticketRepository.findByClienteId(idCliente)
         if (tickets != null && tickets.isNotEmpty()) {
             verificarSeUsuarioEstaLogadoCorretamente(tickets[1].cliente.users.email)
-            val ticketsDTO = tickets.asSequence().map { it.toDTO() }.toList()
+            val ticketsDTO = tickets.asSequence().filter { it.cartela.ativa }.map {
+                it.toDTO()
+            }.toList()
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(ticketsDTO)
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao encontrar ticket")

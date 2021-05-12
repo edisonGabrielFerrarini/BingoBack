@@ -4,6 +4,8 @@ import br.com.devtec.bingo.dominio.ticket.dto.TicketResponseDTO
 import br.com.devtec.bingo.dominio.ticket.model.entity.Ticket
 
 fun Ticket.toDTO() = TicketResponseDTO(
+    id = id,
+    valor_premio = cartela.valor,
     id_cartela = cartela.id,
     id_cliente = cliente.id,
     valor = valor,

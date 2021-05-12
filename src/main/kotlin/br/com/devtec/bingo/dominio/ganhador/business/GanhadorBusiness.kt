@@ -2,6 +2,7 @@ package br.com.devtec.bingo.dominio.ganhador.business
 
 import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteGanhosDTO
+import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
 import br.com.devtec.bingo.dominio.cliente.facade.ClienteFacade
 import br.com.devtec.bingo.dominio.ganhador.dto.GanhadorDTO
 import br.com.devtec.bingo.dominio.ganhador.dto.converter.toDTO
@@ -12,7 +13,6 @@ import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import kotlin.math.ceil
 
@@ -52,11 +52,11 @@ class GanhadorBusiness {
                 }.toList()
 
 
-                val ganhos = ceil(cartela.valor).toInt() / ganhadores.size
+                val saldo = ceil(cartela.valor).toInt() / ganhadores.size
                 ganhadores.forEach {
-                    clienteFacede.updateGanhos(
-                        it.ticket.cliente.id, ClienteGanhosDTO(
-                            ganhos = ganhos.toDouble()
+                    clienteFacede.updateSaldo(
+                        it.ticket.cliente.id, ClienteSaldoDTO(
+                            saldo = saldo.toDouble()
                         )
                     )
                 }

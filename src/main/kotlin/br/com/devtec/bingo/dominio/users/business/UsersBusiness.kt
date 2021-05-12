@@ -7,10 +7,12 @@ import br.com.devtec.bingo.dominio.users.dto.UsersAdminDTO
 import br.com.devtec.bingo.dominio.users.dto.UsersDTO
 import br.com.devtec.bingo.dominio.users.dto.UsersLoginDTO
 import br.com.devtec.bingo.dominio.users.dto.converter.toEntity
+import br.com.devtec.bingo.dominio.users.model.entity.Users
 import br.com.devtec.bingo.dominio.users.model.repository.UserRepository
 import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
@@ -46,13 +48,9 @@ class UsersBusiness {
     }
 
     fun login(usersLoginDTO: UsersLoginDTO): ResponseEntity<Any> {
-        val user = userRepository.findByEmail(usersLoginDTO.email)
-        if (user != null){
-            println(user.toString())
-            val cliente = clienteFacade.getByUser(user)
-            return ResponseEntity.ok().body(cliente.toResponseDTO())
-        }
-        return ResponseEntity.status(400).body("erro ao buscar usuario")
+        val user = SecurityContextHolder.getContext().authentication.principal as Users
+        val cliente = clienteFacade.getByUser(user)
+        return ResponseEntity.ok().body(cliente.toResponseDTO())
     }
 
 

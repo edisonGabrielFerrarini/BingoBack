@@ -8,6 +8,7 @@ import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
 import br.com.devtec.bingo.dominio.cartela.model.repository.CartelaRepository
 import br.com.devtec.bingo.dominio.cartela.utils.EnumCartela
 import br.com.devtec.bingo.dominio.cartela.utils.GeradorNumeros
+import br.com.devtec.bingo.dominio.ganhador.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import br.com.devtec.bingo.dominio.ganhador.facade.GanhadorFacade
 import br.com.devtec.bingo.dominio.ganhador.model.entity.Ganhador
@@ -95,14 +96,17 @@ class CartelaBusiness {
     fun gerarSorteio(): ResponseEntity<Any> {
         try {
 //            val numeros = geradorNumeros.gerarNumeros()
-            val numeros = "[4, 5, 8, 12, 14, 16, 20, 22, 29, 30, 31, 34, 36, 40, 46, 48, 52, 54, 56, 58]"
+            val numeros = "[4,5,8,12,14,16,20,22,29,30,31,34,36,40,46,48,52,54,56,58]"
             cartelaAtiva()?.let {
                 salvarNumerosSoretados(it, numeros)
             }?.run {
                 val ganhador = gerarGanhador(numeros_sorteados, this) ?: listOf()
                 return if (ganhador.isNotEmpty()) {
                     inativarCartela()
-                    ResponseEntity.status(HttpStatus.ACCEPTED).body(ganhador)
+                    val ganhadorDTO = ganhador.map {
+                        it.toDTO()
+                    }
+                    ResponseEntity.status(HttpStatus.ACCEPTED).body(ganhadorDTO)
                 } else {
                     inativarCartela()
                     criarTabelaAcumulada(this.toAcumuladoDTO())
