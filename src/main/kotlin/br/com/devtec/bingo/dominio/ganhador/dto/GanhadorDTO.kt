@@ -8,6 +8,7 @@ data class GanhadorDTO(
     val id_ticket: Long,
     val estado: String,
     val id_cartela: Long,
+    val id_cliente: Long,
     val valor_premio: Double,
     val numeros: String?,
     val data_premio: LocalDateTime

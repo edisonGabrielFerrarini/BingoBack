@@ -14,7 +14,9 @@ import br.com.devtec.bingo.dominio.users.model.entity.Users
 import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import br.com.devtec.bingo.dominio.utils.exception.UsuarioIncorretoException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.support.PagedListHolder
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -33,11 +35,11 @@ class TicketBusiness(
 
     fun create(ticketDTO: TicketDTO): Any {
         try {
-            val cliente = clienteFacade.getById(ticketDTO.id_cliente).body as Cliente
+            val cliente = clienteFacade.getById(ticketDTO.id_cliente)
             val cartela = cartelaFacade.getByAtiva()
 
             if (cartela != null) {
-                val valorTotal = cartela.valor_numero * 20
+                val valorTotal = cartela.valor_numero
 
                 val statusCode = clienteFacade.debitarSaldo(
                     id = cliente.id,
@@ -82,6 +84,18 @@ class TicketBusiness(
         val tickets = ticketRepository.findByClienteId(idCliente)
         if (tickets != null && tickets.isNotEmpty()) {
             verificarSeUsuarioEstaLogadoCorretamente(tickets[1].cliente.users.email)
+            val ticketsDTO = tickets.asSequence().map {
+                it.toDTO()
+            }.toList()
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(ticketsDTO)
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao encontrar ticket")
+    }
+
+    fun getTicketsAtivosByCliente(idCliente: Long): ResponseEntity<Any> {
+        val tickets = ticketRepository.findByClienteId(idCliente)
+        if (tickets != null && tickets.isNotEmpty()) {
+            verificarSeUsuarioEstaLogadoCorretamente(tickets[1].cliente.users.email)
             val ticketsDTO = tickets.asSequence().filter { it.cartela.ativa }.map {
                 it.toDTO()
             }.toList()
@@ -104,5 +118,16 @@ class TicketBusiness(
             throw UsuarioIncorretoException("Usuario logado é diferente do usuario solicitado")
         }
     }
+
+    fun obterRendimentos(valorTicket: Int): Long {
+        try {
+            val tickets = ticketRepository.findAll().filter { it.cartela.ativa }.size
+
+            return tickets.toLong() * valorTicket
+        }catch (e: Exception){
+            throw PersistirDadosException(e.message!!)
+        }
+    }
+
 
 }

@@ -26,7 +26,7 @@ class ClienteFacade {
         return clienteBusiness.getAll(pageable)
     }
 
-    fun getById(id: Long): ResponseEntity<Any> {
+    fun getById(id: Long): Cliente {
         return clienteBusiness.getByID(id)
     }
 

@@ -1,8 +1,11 @@
 package br.com.devtec.bingo.api.cartela
 
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaDTO
+import br.com.devtec.bingo.dominio.cartela.dto.CartelaRendimentosDTO
 import br.com.devtec.bingo.dominio.cartela.facade.CartelaFacade
+import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -25,14 +28,29 @@ class CartelaApi(
         return cartelaFacade.getAtiva()
     }
 
-    @GetMapping(value = ["/inativa"])
-    fun inativarCartela(): ResponseEntity<Any> {
-        return cartelaFacade.inativarCartela()
+    @GetMapping(value = ["/all"])
+    fun getAll(pageable: Pageable): Page<Cartela> {
+        return cartelaFacade.getAll(pageable)
+    }
+
+    @GetMapping(value = ["/ultimo"])
+    fun obterUltimosSorteios(): List<Cartela> {
+        return cartelaFacade.obterUltimosSorteios()
     }
 
     @GetMapping(value = ["/sorteia"])
     fun sortearNumeros(): ResponseEntity<Any> {
         return cartelaFacade.sortear()
+    }
+
+    @GetMapping(value = ["/rendimento"])
+    fun rendimentos(): CartelaRendimentosDTO {
+        return cartelaFacade.obeterRendimentos()
+    }
+
+    @GetMapping(value = ["/cancela"])
+    fun cancelar(): ResponseEntity<Any> {
+        return cartelaFacade.inativarCartela()
     }
 
 }

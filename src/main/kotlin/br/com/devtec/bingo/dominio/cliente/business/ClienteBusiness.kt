@@ -136,7 +136,7 @@ class ClienteBusiness {
 
     fun debitarGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<ClienteResponseDTO> {
         try {
-            val cliente = getByID(id).body as Cliente
+            val cliente = getByID(id)
             return salvarDados(
                 cliente.copy(
                     ganhos = cliente.ganhos - clienteGanhosDTO.ganhos
@@ -157,12 +157,11 @@ class ClienteBusiness {
         }
     }
 
-    fun getByID(id: Long): ResponseEntity<Any> {
-        return try {
-            val cliente = clienteRepository.findById(id).get()
-            ResponseEntity.status(HttpStatus.ACCEPTED).body(cliente)
+    fun getByID(id: Long): Cliente {
+        try {
+             return clienteRepository.findById(id).get()
         } catch (e: Exception) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
+            throw PersistirDadosException("Erro ao buscar id ${id}")
         }
     }
 

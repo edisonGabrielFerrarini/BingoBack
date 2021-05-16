@@ -27,6 +27,11 @@ class TicketApi(
         return ticketFacade.getAll(pageable)
     }
 
+    @GetMapping(value = ["/busca/ativo/{id}"])
+    fun getTicketsAtivosByCliente(@PathVariable("id") id: Long ): ResponseEntity<Any> {
+        return ticketFacade.getTicketsAtivosByCliente(id)
+    }
+
     @GetMapping(value = ["/busca/{id}"])
     fun getByCliente(@PathVariable("id") id: Long ): ResponseEntity<Any> {
         return ticketFacade.getByCliente(id)

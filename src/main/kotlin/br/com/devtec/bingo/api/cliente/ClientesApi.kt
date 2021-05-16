@@ -1,6 +1,5 @@
 package br.com.devtec.bingo.api.cliente
 
-import br.com.devtec.bingo.dominio.cliente.dto.ClienteGanhosDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteRequestDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteResponseDTO
 import br.com.devtec.bingo.dominio.cliente.dto.ClienteSaldoDTO
@@ -48,6 +47,14 @@ class ClientesApi(
         @RequestBody clienteSaldoDTO: ClienteSaldoDTO
     ): ResponseEntity<ClienteResponseDTO> {
         return clienteFacade.updateSaldo(id, clienteSaldoDTO)
+    }
+
+    @PutMapping(value = ["/debita/saldo/{id}"])
+    fun debitarSaldo(
+        @PathVariable("id") id: Long,
+        @RequestBody clienteSaldoDTO: ClienteSaldoDTO
+    ): ResponseEntity<Any> {
+        return clienteFacade.debitarSaldo(id, clienteSaldoDTO)
     }
 
 }

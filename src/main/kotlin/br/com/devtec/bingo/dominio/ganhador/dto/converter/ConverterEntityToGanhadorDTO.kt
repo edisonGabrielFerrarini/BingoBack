@@ -8,6 +8,7 @@ fun Ganhador.toDTO() = GanhadorDTO(
     nome = ticket.cliente.nome,
     id_cartela = ticket.cartela.id,
     id_ticket = ticket.id,
+    id_cliente = ticket.cliente.id,
     estado = ticket.cliente.estado,
     valor_premio = ticket.cartela.valor,
     numeros = ticket.cartela.numeros_sorteados,

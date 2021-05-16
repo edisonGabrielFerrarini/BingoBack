@@ -11,4 +11,6 @@ interface TicketRepository: JpaRepository<Ticket, Long> {
 
     @Query("SELECT t FROM Ticket t JOIN FETCH t.cartela WHERE t.numeros = ?1 AND t.cartela = ?2")
     fun findByNumerosAndCartelaId(numeros: String, cartela: Cartela): List<Ticket>?
+
+
 }

@@ -1,17 +1,20 @@
-package br.com.devtec.bingo.dominio.cliente.model.entity
+package br.com.devtec.bingo.dominio.agente.model.entity
 
-import br.com.devtec.bingo.dominio.users.model.entity.Users
+import br.com.devtec.bingo.dominio.gerente.model.entity.Gerente
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-@Table(name = "gerente")
-data class Gerente(
+@Table(name = "agente")
+data class Agente(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "serial")
     val id: Long = 0,
+
+    @OneToOne(fetch = FetchType.LAZY)
+    var gerente: Gerente,
 
     @Column(length = 60, nullable = false)
     val nome: String,
@@ -24,6 +27,9 @@ data class Gerente(
 
     @Column(length = 20, nullable = false)
     val cpf: String,
+
+    @Column(nullable = true)
+    val porcentual_venda: Double,
 
     @Column(length = 150, nullable = false)
     val cidade: String,

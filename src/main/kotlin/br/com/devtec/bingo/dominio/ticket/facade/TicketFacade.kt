@@ -25,6 +25,10 @@ class TicketFacade {
         return ticketBusiness.getAll(pageable)
     }
 
+    fun getTicketsAtivosByCliente(id: Long): ResponseEntity<Any> {
+        return ticketBusiness.getTicketsAtivosByCliente(id)
+    }
+
     fun getByCliente(id: Long): ResponseEntity<Any> {
         return ticketBusiness.getByUser(id)
     }
@@ -32,5 +36,10 @@ class TicketFacade {
     fun getByNumerosAndCartela(numerosSorteados: String, cartela: Cartela): List<Ticket>? {
         return ticketBusiness.getByNumeros(numerosSorteados, cartela)
     }
+
+    fun obeterRendimentos(valorTIcket: Int): Long {
+        return ticketBusiness.obterRendimentos(valorTIcket)
+    }
+
 
 }

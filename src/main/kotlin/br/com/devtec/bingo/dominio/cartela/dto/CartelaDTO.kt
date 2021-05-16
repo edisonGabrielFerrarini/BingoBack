@@ -8,3 +8,11 @@ data class CartelaDTO(
     val valor_numero: Double,
     val valor_porcentagem: Int
 )
+
+data class  CartelaRendimentosDTO(
+    val id: Long,
+    val valor: Double,
+    val rendimentos: Double,
+    val valor_numero: Double
+
+)

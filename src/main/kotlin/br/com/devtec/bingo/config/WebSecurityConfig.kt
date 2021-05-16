@@ -33,6 +33,10 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.POST, "/api/cartela").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/cartela/inativa").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/cartela/sorteia").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/cartela/rendimento").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/cartela/all").hasAnyRole("ADMIN", "USER")
+            .antMatchers(HttpMethod.GET, "/api/cartela/ultimo").hasAnyRole("ADMIN", "USER")
+            .antMatchers(HttpMethod.GET, "/api/cartela/cancela").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/ganhador").hasRole("USER")
             .antMatchers(HttpMethod.GET, "/api/ticket/busca/{id}").hasRole("USER")
             .antMatchers(HttpMethod.GET, "/api/ticket").hasRole("ADMIN")
@@ -42,6 +46,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .antMatchers(HttpMethod.GET, "/api/cliente/busca/{id}").hasRole("USER")
             .antMatchers(HttpMethod.GET, "/api/cliente/admin/busca/{id}").hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/api/cliente/update/saldo/{id}").hasRole("ADMIN")
+            .antMatchers(HttpMethod.PUT, "/api/cliente/debita/saldo/{id}").hasRole("ADMIN")
             .and().csrf().disable()
             .formLogin().disable()
     }

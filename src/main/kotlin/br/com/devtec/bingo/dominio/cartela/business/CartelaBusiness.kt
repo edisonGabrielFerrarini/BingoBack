@@ -1,6 +1,7 @@
 package br.com.devtec.bingo.dominio.cartela.business
 
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaDTO
+import br.com.devtec.bingo.dominio.cartela.dto.CartelaRendimentosDTO
 import br.com.devtec.bingo.dominio.cartela.dto.converter.toAcumuladoDTO
 import br.com.devtec.bingo.dominio.cartela.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.cartela.dto.converter.toEntity
@@ -9,10 +10,15 @@ import br.com.devtec.bingo.dominio.cartela.model.repository.CartelaRepository
 import br.com.devtec.bingo.dominio.cartela.utils.EnumCartela
 import br.com.devtec.bingo.dominio.cartela.utils.GeradorNumeros
 import br.com.devtec.bingo.dominio.ganhador.dto.converter.toDTO
-import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import br.com.devtec.bingo.dominio.ganhador.facade.GanhadorFacade
 import br.com.devtec.bingo.dominio.ganhador.model.entity.Ganhador
+import br.com.devtec.bingo.dominio.ticket.facade.TicketFacade
+import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -31,14 +37,15 @@ class CartelaBusiness {
     @Autowired
     lateinit var ganhadorFacade: GanhadorFacade
 
+    @Autowired
+    lateinit var ticketFacade: TicketFacade
+
 
     fun create(cartelaDTO: CartelaDTO): ResponseEntity<Any> {
-        if (nonNull(cartelaRepository.findByAtiva(ativa = true))) {
+        if (cartelaRepository.findByAtiva(ativa = true).isNotEmpty()) {
             return ResponseEntity.status(400).body(EnumCartela.CartelaAtivaExite.value)
         }
-
         val acumulada = getByAcumulada()
-
         if (acumulada != null) {
             println("${acumulada.valor_acumulado} e ${cartelaDTO.valor}  = ${acumulada.valor_acumulado + cartelaDTO.valor}")
             val save = cartelaRepository.save(
@@ -56,6 +63,7 @@ class CartelaBusiness {
             }
         }
 
+        println(cartelaDTO.toString())
         val save = cartelaRepository.save(cartelaDTO.toEntity())
         if (nonNull(save)) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(save.toDTO())
@@ -69,25 +77,37 @@ class CartelaBusiness {
     }
 
     fun get(): ResponseEntity<Any> {
-        cartelaAtiva()?.let {
+        cartelaAtiva().let {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(it.toDTO())
         }
-        return ResponseEntity.status(400).body(EnumCartela.InicieUmaCartela.value)
+    }
+
+    fun cancelar(acumulada: Boolean = false): ResponseEntity<Any> {
+        try {
+            cartelaAtiva().let {
+                cartelaRepository.delete(
+                    it
+                )
+            }.let {
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body("removido com sucesso")
+            }
+        } catch (e: Exception) {
+            throw PersistirDadosException(EnumCartela.ErroBanco.value)
+        }
     }
 
     fun inativarCartela(acumulada: Boolean = false): ResponseEntity<Any> {
         try {
-            cartelaAtiva()?.let {
+            cartelaAtiva().let {
                 cartelaRepository.save(
                     it.copy(
                         ativa = false,
                         acumulada = acumulada
                     )
                 )
-            }?.let {
+            }.let {
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body(it.toDTO())
             }
-            return ResponseEntity.status(400).body(EnumCartela.InicieUmaCartela.value)
         } catch (e: Exception) {
             throw PersistirDadosException(EnumCartela.ErroBanco.value)
         }
@@ -97,9 +117,9 @@ class CartelaBusiness {
         try {
 //            val numeros = geradorNumeros.gerarNumeros()
             val numeros = "[4,5,8,12,14,16,20,22,29,30,31,34,36,40,46,48,52,54,56,58]"
-            cartelaAtiva()?.let {
+            cartelaAtiva().let {
                 salvarNumerosSoretados(it, numeros)
-            }?.run {
+            }.run {
                 val ganhador = gerarGanhador(numeros_sorteados, this) ?: listOf()
                 return if (ganhador.isNotEmpty()) {
                     inativarCartela()
@@ -110,10 +130,9 @@ class CartelaBusiness {
                 } else {
                     inativarCartela()
                     criarTabelaAcumulada(this.toAcumuladoDTO())
-                    ResponseEntity.status(400).body("Não houve ganhadores, sua cartela foi acumulada")
+                    ResponseEntity.status(200).body("Não houve ganhadores, sua cartela foi acumulada")
                 }
             }
-            return ResponseEntity.status(400).body(EnumCartela.InicieUmaCartela.value)
         } catch (e: Exception) {
             throw PersistirDadosException(EnumCartela.ErroBanco.value)
         }
@@ -124,8 +143,11 @@ class CartelaBusiness {
         cartelaRepository.save(
             cartelaDTO.toEntity().copy(
                 acumulada = true,
-                ativa = false,
-                valor_acumulado = valor_acumulado
+                ativa = true,
+                valor = cartelaDTO.valor + valor_acumulado,
+                valor_numero = cartelaDTO.valor_numero,
+                valor_acumulado = valor_acumulado,
+                numeros_sorteados = ""
             )
         )
     }
@@ -142,8 +164,51 @@ class CartelaBusiness {
         )
     }
 
-    fun cartelaAtiva(): Cartela? {
-        return cartelaRepository.findByAtiva(ativa = true)
+    fun cartelaAtiva(): Cartela {
+        try {
+            return cartelaRepository.findByAtiva(ativa = true)[0]
+        }catch (e: Exception){
+            throw PersistirDadosException("Nenhuma cartela ativa")
+        }
+    }
+
+    fun buscarCartelaERendimentos(): CartelaRendimentosDTO {
+        val cartela = cartelaAtiva()
+        val rendimentos = ticketFacade.obeterRendimentos(cartela.valor_numero.toInt())
+        return CartelaRendimentosDTO(
+            id = cartela.id,
+            valor = cartela.valor,
+            rendimentos = rendimentos.toDouble(),
+            valor_numero = cartela.valor_numero
+        )
+    }
+
+    fun getAll(pageable: Pageable): Page<Cartela> {
+        try {
+            return cartelaRepository.findByAtiva(false, pageable)
+        }catch (e: Exception){
+            throw PersistirDadosException("Cartela não encontrada")
+        }
+    }
+
+    fun obterUltimosSorteios(): List<Cartela> {
+        try {
+            val cartela = mutableListOf<Cartela>()
+            cartelaRepository
+                .findByAtiva(false)
+                .sortedByDescending { it.id }
+                .run {
+                    this.forEach{
+                        if (cartela.size <= 4){
+                            cartela.add(it)
+                        }
+                    }
+                }
+
+            return cartela
+        } catch (e: Exception) {
+            throw PersistirDadosException("Cartela não encontrada")
+        }
     }
 
 
