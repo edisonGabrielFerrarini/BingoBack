@@ -122,7 +122,6 @@ class TicketBusiness(
     fun obterRendimentos(valorTicket: Int): Long {
         try {
             val tickets = ticketRepository.findAll().filter { it.cartela.ativa }.size
-
             return tickets.toLong() * valorTicket
         }catch (e: Exception){
             throw PersistirDadosException(e.message!!)

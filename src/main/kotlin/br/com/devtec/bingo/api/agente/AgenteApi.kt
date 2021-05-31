@@ -1,6 +1,9 @@
 package br.com.devtec.bingo.api.agente
 
 import br.com.devtec.bingo.dominio.agente.dto.AgenteDTO
+import br.com.devtec.bingo.dominio.agente.dto.AgenteResponseDTO
+import br.com.devtec.bingo.dominio.agente.dto.converter.toDTO
+import br.com.devtec.bingo.dominio.agente.dto.converter.toResponseDTO
 import br.com.devtec.bingo.dominio.agente.facade.AgenteFacade
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -14,32 +17,48 @@ class AgenteApi(
 ) {
 
     @PostMapping
-    fun create(@RequestBody agenteDTO: AgenteDTO): ResponseEntity<Any> {
-        return agenteFacade.create(agenteDTO)
-    }
+    fun create(@RequestBody agenteDTO: AgenteDTO) =
+        try {
+            ResponseEntity.accepted().body(agenteFacade.create(agenteDTO).toResponseDTO())
+        }catch (e: Exception){
+            ResponseEntity.badRequest().body("Erro ao buscar Gerente")
+        }
 
     @GetMapping
-    fun getAll(): ResponseEntity<List<AgenteDTO>> {
-        return agenteFacade.getAll()
-    }
+    fun getAll() =
+        try {
+            ResponseEntity.accepted().body(agenteFacade.getAll())
+        }catch (e: Exception){
+            ResponseEntity.badRequest().body("Erro ao buscar todos agentes")
+        }
+
 
     @GetMapping(value = ["/id/{id}"])
-    fun getById(@PathVariable("id") id: Long): ResponseEntity<AgenteDTO> {
-        return agenteFacade.getById(id)
-    }
+    fun getById(@PathVariable("id") id: Long) =
+        try {
+            ResponseEntity.accepted().body(agenteFacade.getById(id).toDTO())
+        }catch (e: Exception){
+            ResponseEntity.badRequest().body("Erro ao buscar agente")
+        }
 
     @GetMapping(value = ["/cpf/{cpf}"])
-    fun getByCpf(@PathVariable("cpf") cpf: String): ResponseEntity<AgenteDTO> {
-        return agenteFacade.getByCPF(cpf)
-    }
+    fun getByCpf(@PathVariable("cpf") cpf: String) =
+        try {
+            ResponseEntity.accepted().body(agenteFacade.getByCPF(cpf).toDTO())
+        }catch (e: Exception){
+            ResponseEntity.badRequest().body("Erro ao buscar agente")
+        }
+
 
     @GetMapping(value = ["/vincula/cliente/{id_cliente}/agente/{id_agente}"])
     fun vincularCliente(
             @PathVariable("id_cliente") id_cliente: Long,
             @PathVariable("id_agente") id_agente: Long
-    ): ResponseEntity.BodyBuilder {
-        return agenteFacade.vincularCliente(id_cliente, id_agente)
-    }
-
+    ) =
+        try {
+            agenteFacade.vincularCliente(id_cliente, id_agente)
+        }catch (e: Exception){
+            ResponseEntity.badRequest().body("Erro ao vincular cliente com agente")
+        }
 
 }

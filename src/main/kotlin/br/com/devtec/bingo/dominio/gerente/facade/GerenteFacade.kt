@@ -2,6 +2,7 @@ package br.com.devtec.bingo.dominio.gerente.facade
 
 import br.com.devtec.bingo.dominio.gerente.business.GerenteBusiness
 import br.com.devtec.bingo.dominio.gerente.dto.GerenteDTO
+import br.com.devtec.bingo.dominio.gerente.dto.GerenteResponseDTO
 import br.com.devtec.bingo.dominio.gerente.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.gerente.model.entity.Gerente
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +25,7 @@ class GerenteFacade(
         return gerenteBusiness.getByCPF(cpf)
     }
 
-    fun getAll(pageable: Pageable): Page<GerenteDTO> {
+    fun getAll(pageable: Pageable): Page<GerenteResponseDTO> {
         return gerenteBusiness.getAll(pageable)
     }
 

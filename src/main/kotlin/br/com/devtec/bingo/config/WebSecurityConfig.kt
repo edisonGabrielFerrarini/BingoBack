@@ -3,6 +3,7 @@ package br.com.devtec.bingo.config
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.env.Environment
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -17,9 +18,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+    class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     private lateinit var userDetailsService: ImplementsUserDetailsService
+
+    @Autowired
+    private lateinit var env: Environment
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
@@ -29,15 +33,25 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
             .httpBasic().and().authorizeRequests()
             .antMatchers(HttpMethod.POST, "/api/users/cadastro").permitAll()
             .antMatchers(HttpMethod.POST, "/api/users/login").hasAnyRole("USER")
+            .antMatchers(HttpMethod.POST, "/api/users/login_admin").hasAnyRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/cartela").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.POST, "/api/cartela").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/cartela/inativa").hasRole("ADMIN")
-            .antMatchers(HttpMethod.GET, "/api/cartela/sorteia").hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST, "/api/cartela/sorteia").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/cartela/rendimento").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/api/cartela/all").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.GET, "/api/cartela/ultimo").hasAnyRole("ADMIN", "USER")
             .antMatchers(HttpMethod.GET, "/api/cartela/cancela").hasRole("ADMIN")
-            .antMatchers(HttpMethod.GET, "/api/ganhador").hasRole("USER")
+            .antMatchers(HttpMethod.POST, "/api/agente").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/agente").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/agente/id/{id}").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/agente/cpf/{cpf}").hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST, "/api/gerente").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/gerente").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/gerente/id/{id}").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/gerente/cpf/{cpf}").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/vincula/cliente/{id_cliente}/agente/{id_agente}").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/ganhador").hasAnyRole("USER", "ADMIN")
             .antMatchers(HttpMethod.GET, "/api/ticket/busca/{id}").hasRole("USER")
             .antMatchers(HttpMethod.GET, "/api/ticket").hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, "/api/ticket").hasAnyRole("ADMIN", "USER")
@@ -60,6 +74,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource? {
         val configuration = CorsConfiguration().applyPermitDefaultValues()
+        configuration.addAllowedOrigin(env.getProperty("origin.permitida").toString())
         configuration.allowedMethods = listOf("POST", "GET", "PUT", "DELETE", "OPTIONS")
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)

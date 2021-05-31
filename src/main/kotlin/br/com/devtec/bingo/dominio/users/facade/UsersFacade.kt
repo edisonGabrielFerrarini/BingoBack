@@ -28,5 +28,8 @@ class UsersFacade(
         return usersBusiness.login(usersLoginDTO)
     }
 
+    fun loginAdmin(): ResponseEntity<String> {
+        return usersBusiness.loginAdmin()
+    }
 
 }

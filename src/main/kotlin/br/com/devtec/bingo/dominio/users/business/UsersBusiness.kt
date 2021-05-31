@@ -53,5 +53,35 @@ class UsersBusiness {
         return ResponseEntity.ok().body(cliente.toResponseDTO())
     }
 
+    fun loginAdmin(): ResponseEntity<String> {
+        val user = SecurityContextHolder.getContext().authentication.principal as Users
+        return ResponseEntity.ok().body(user.email)
+    }
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

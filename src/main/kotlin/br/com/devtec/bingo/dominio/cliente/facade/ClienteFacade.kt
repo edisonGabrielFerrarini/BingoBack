@@ -30,6 +30,10 @@ class ClienteFacade {
         return clienteBusiness.getByID(id)
     }
 
+    fun getByCPF(cpf: String): ResponseEntity<ClienteResponseDTO> {
+        return clienteBusiness.getByCPF(cpf)
+    }
+
     fun buscarPorID(id: Long, isNotAdmin: Boolean = true): Any? {
         return clienteBusiness.buscarPorID(id, isNotAdmin)
     }
@@ -42,17 +46,11 @@ class ClienteFacade {
         return clienteBusiness.updateSaldo(id, clienteSaldoDTO)
     }
 
-    fun updateGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<ClienteResponseDTO> {
-        return clienteBusiness.updateGanhos(id, clienteGanhosDTO)
-    }
 
     fun debitarSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
         return clienteBusiness.debitarSaldo(id, clienteSaldoDTO)
     }
 
-    fun debitarGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<ClienteResponseDTO> {
-        return clienteBusiness.debitarGanhos(id, clienteGanhosDTO)
-    }
 
     fun getByUser(users: Users): Cliente {
         return clienteBusiness.getByUser(users)

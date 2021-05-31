@@ -45,6 +45,18 @@ class ClienteBusiness {
         )
     }
 
+    fun getByCPF(cpf: String): ResponseEntity<ClienteResponseDTO> {
+        try{
+            val cliente = clienteRepository.findByCpf(cpf)
+            if (cliente != null){
+                return ResponseEntity.accepted().body(cliente.toResponseDTO())
+            }
+            return ResponseEntity.badRequest().build()
+        }catch (e: Exception){
+            throw PersistirDadosException("Erro ao buscar dados")
+        }
+    }
+
     fun getAll(pageable: Pageable): Page<ClienteResponseDTO> {
         try {
             return clienteRepository.findAll(pageable).map {
@@ -101,20 +113,6 @@ class ClienteBusiness {
         }
     }
 
-    fun updateGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<ClienteResponseDTO> {
-        try {
-            clienteRepository.findById(id).get().let {
-                println(it.ganhos)
-                return salvarDados(
-                    it.copy(
-                        ganhos = it.ganhos + clienteGanhosDTO.ganhos
-                    )
-                )
-            }
-        } catch (e: Exception) {
-            throw PersistirDadosException(EnumCliente.ERRO_AO_PERSISTIR_DADOS.erro)
-        }
-    }
 
     fun debitarSaldo(id: Long, clienteSaldoDTO: ClienteSaldoDTO): ResponseEntity<Any> {
         try {
@@ -131,19 +129,6 @@ class ClienteBusiness {
             }
         } catch (e: Exception) {
             throw PersistirDadosException(EnumCliente.CLIENTE_NAO_ENCONTRADO.erro)
-        }
-    }
-
-    fun debitarGanhos(id: Long, clienteGanhosDTO: ClienteGanhosDTO): ResponseEntity<ClienteResponseDTO> {
-        try {
-            val cliente = getByID(id)
-            return salvarDados(
-                cliente.copy(
-                    ganhos = cliente.ganhos - clienteGanhosDTO.ganhos
-                )
-            )
-        } catch (e: Exception) {
-            throw PersistirDadosException(EnumCliente.ERRO_AO_PERSISTIR_DADOS.erro)
         }
     }
 

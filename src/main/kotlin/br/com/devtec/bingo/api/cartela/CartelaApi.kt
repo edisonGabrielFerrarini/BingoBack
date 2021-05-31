@@ -1,6 +1,7 @@
 package br.com.devtec.bingo.api.cartela
 
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaDTO
+import br.com.devtec.bingo.dominio.cartela.dto.CartelaNumerosDTO
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaRendimentosDTO
 import br.com.devtec.bingo.dominio.cartela.facade.CartelaFacade
 import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@CrossOrigin(origins = ["http://192.168.0.11:8081"])
 @RequestMapping(value = ["api/cartela"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class CartelaApi(
     @Autowired private val cartelaFacade: CartelaFacade
@@ -38,9 +38,11 @@ class CartelaApi(
         return cartelaFacade.obterUltimosSorteios()
     }
 
-    @GetMapping(value = ["/sorteia"])
-    fun sortearNumeros(): ResponseEntity<Any> {
-        return cartelaFacade.sortear()
+    @PostMapping(value = ["/sorteia"])
+    fun sortearNumeros(
+        @RequestBody cartelaNumerosDTO: CartelaNumerosDTO
+    ): ResponseEntity<Any> {
+        return cartelaFacade.sortear(cartelaNumerosDTO)
     }
 
     @GetMapping(value = ["/rendimento"])

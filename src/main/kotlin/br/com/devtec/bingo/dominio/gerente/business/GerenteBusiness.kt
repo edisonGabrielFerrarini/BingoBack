@@ -1,8 +1,10 @@
 package br.com.devtec.bingo.dominio.gerente.business
 
 import br.com.devtec.bingo.dominio.gerente.dto.GerenteDTO
+import br.com.devtec.bingo.dominio.gerente.dto.GerenteResponseDTO
 import br.com.devtec.bingo.dominio.gerente.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.gerente.dto.converter.toEntiy
+import br.com.devtec.bingo.dominio.gerente.dto.converter.toResponseDTO
 import br.com.devtec.bingo.dominio.gerente.model.entity.Gerente
 import br.com.devtec.bingo.dominio.gerente.model.repository.GerenteRepository
 import br.com.devtec.bingo.dominio.utils.exception.PersistirDadosException
@@ -26,10 +28,10 @@ class GerenteBusiness(
         }
     }
 
-    fun getAll(pageable: Pageable): Page<GerenteDTO> {
+    fun getAll(pageable: Pageable): Page<GerenteResponseDTO> {
         try {
             return gerenteRepository.findAll(pageable).map {
-                it.toDTO()
+                it.toResponseDTO()
             }
         }catch (e: Exception){
             throw PersistirDadosException("Erro ao buscar gerentes")

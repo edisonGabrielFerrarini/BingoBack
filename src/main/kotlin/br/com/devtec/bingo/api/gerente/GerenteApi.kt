@@ -1,6 +1,7 @@
 package br.com.devtec.bingo.api.gerente
 
 import br.com.devtec.bingo.dominio.gerente.dto.GerenteDTO
+import br.com.devtec.bingo.dominio.gerente.dto.GerenteResponseDTO
 import br.com.devtec.bingo.dominio.gerente.dto.converter.toDTO
 import br.com.devtec.bingo.dominio.gerente.facade.GerenteFacade
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +23,7 @@ class GerenteApi(
     }
 
     @GetMapping
-    fun getAll(pageable: Pageable): Page<GerenteDTO> {
+    fun getAll(pageable: Pageable): Page<GerenteResponseDTO> {
         return gerenteFacade.getAll(pageable)
     }
 

@@ -1,6 +1,7 @@
 package br.com.devtec.bingo.dominio.agente.dto.converter
 
 import br.com.devtec.bingo.dominio.agente.dto.AgenteDTO
+import br.com.devtec.bingo.dominio.agente.dto.AgenteResponseDTO
 import br.com.devtec.bingo.dominio.agente.model.entity.Agente
 import br.com.devtec.bingo.dominio.gerente.model.entity.Gerente
 
@@ -22,6 +23,19 @@ fun Agente.toDTO() = AgenteDTO(
     telefone = telefone,
     cpf = cpf,
     cidade = cidade,
+    estado = estado,
+    porcentual_venda = porcentual_venda,
+    id_gerente = gerente.id
+)
+
+fun Agente.toResponseDTO() = AgenteResponseDTO(
+    id = id,
+    nome = nome,
+    celular = celular,
+    telefone = telefone,
+    cpf = cpf,
+    cidade = cidade,
+    nome_gerente = gerente.nome,
     estado = estado,
     porcentual_venda = porcentual_venda,
     id_gerente = gerente.id

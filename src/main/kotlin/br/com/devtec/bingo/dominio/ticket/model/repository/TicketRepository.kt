@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param
 interface TicketRepository: JpaRepository<Ticket, Long> {
     fun findByClienteId(cliente_id: Long) : List<Ticket>?
 
-    @Query("SELECT t FROM Ticket t JOIN FETCH t.cartela WHERE t.numeros = ?1 AND t.cartela = ?2")
+    @Query("SELECT t FROM Ticket t JOIN FETCH t.cartela WHERE t.numeros like ?1 AND t.cartela = ?2")
     fun findByNumerosAndCartelaId(numeros: String, cartela: Cartela): List<Ticket>?
 
 

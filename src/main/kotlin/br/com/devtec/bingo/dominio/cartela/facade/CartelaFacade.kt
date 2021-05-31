@@ -2,6 +2,7 @@ package br.com.devtec.bingo.dominio.cartela.facade
 
 import br.com.devtec.bingo.dominio.cartela.business.CartelaBusiness
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaDTO
+import br.com.devtec.bingo.dominio.cartela.dto.CartelaNumerosDTO
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaRendimentosDTO
 import br.com.devtec.bingo.dominio.cartela.model.entity.Cartela
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,8 +33,8 @@ class CartelaFacade {
         return cartelaBusiness.cancelar()
     }
 
-    fun sortear(): ResponseEntity<Any> {
-        return cartelaBusiness.gerarSorteio()
+    fun sortear(cartelaNumerosDTO: CartelaNumerosDTO): ResponseEntity<Any> {
+        return cartelaBusiness.gerarSorteio(cartelaNumerosDTO)
     }
 
     fun getByAtiva(): Cartela? {

@@ -1,6 +1,7 @@
 package br.com.devtec.bingo.dominio.cartela.business
 
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaDTO
+import br.com.devtec.bingo.dominio.cartela.dto.CartelaNumerosDTO
 import br.com.devtec.bingo.dominio.cartela.dto.CartelaRendimentosDTO
 import br.com.devtec.bingo.dominio.cartela.dto.converter.toAcumuladoDTO
 import br.com.devtec.bingo.dominio.cartela.dto.converter.toDTO
@@ -43,11 +44,10 @@ class CartelaBusiness {
 
     fun create(cartelaDTO: CartelaDTO): ResponseEntity<Any> {
         if (cartelaRepository.findByAtiva(ativa = true).isNotEmpty()) {
-            return ResponseEntity.status(400).body(EnumCartela.CartelaAtivaExite.value)
+            return ResponseEntity.badRequest().body(EnumCartela.CartelaAtivaExite.value)
         }
         val acumulada = getByAcumulada()
         if (acumulada != null) {
-            println("${acumulada.valor_acumulado} e ${cartelaDTO.valor}  = ${acumulada.valor_acumulado + cartelaDTO.valor}")
             val save = cartelaRepository.save(
                 acumulada.copy(
                     numeros_sorteados = cartelaDTO.numeros_sorteados,
@@ -63,7 +63,6 @@ class CartelaBusiness {
             }
         }
 
-        println(cartelaDTO.toString())
         val save = cartelaRepository.save(cartelaDTO.toEntity())
         if (nonNull(save)) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(save.toDTO())
@@ -113,14 +112,13 @@ class CartelaBusiness {
         }
     }
 
-    fun gerarSorteio(): ResponseEntity<Any> {
+    fun gerarSorteio(cartelaNumerosDTO: CartelaNumerosDTO): ResponseEntity<Any> {
         try {
-//            val numeros = geradorNumeros.gerarNumeros()
-            val numeros = "[4,5,8,12,14,16,20,22,29,30,31,34,36,40,46,48,52,54,56,58]"
             cartelaAtiva().let {
-                salvarNumerosSoretados(it, numeros)
+                salvarNumerosSoretados(it, cartelaNumerosDTO.numeros)
             }.run {
-                val ganhador = gerarGanhador(numeros_sorteados, this) ?: listOf()
+
+                val ganhador = numeros_sorteados?.let { gerarGanhador(it, this) } ?: listOf()
                 return if (ganhador.isNotEmpty()) {
                     inativarCartela()
                     val ganhadorDTO = ganhador.map {
@@ -133,6 +131,7 @@ class CartelaBusiness {
                     ResponseEntity.status(200).body("Não houve ganhadores, sua cartela foi acumulada")
                 }
             }
+
         } catch (e: Exception) {
             throw PersistirDadosException(EnumCartela.ErroBanco.value)
         }
@@ -152,8 +151,12 @@ class CartelaBusiness {
         )
     }
 
-    fun gerarGanhador(numerosSorteados: String?, cartela: Cartela): List<Ganhador>? {
-        return numerosSorteados?.let { ganhadorFacade.create(it, cartela) }
+    fun gerarGanhador(numerosSorteados: String, cartela: Cartela): List<Ganhador>? {
+        val numeros = numerosSorteados
+            .replace("[","%")
+            .replace("]","%")
+            .replace(",","%")
+        return ganhadorFacade.create(numeros, cartela)
     }
 
     fun salvarNumerosSoretados(cartela: Cartela, numerosSorteados: String): Cartela {
@@ -167,7 +170,7 @@ class CartelaBusiness {
     fun cartelaAtiva(): Cartela {
         try {
             return cartelaRepository.findByAtiva(ativa = true)[0]
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw PersistirDadosException("Nenhuma cartela ativa")
         }
     }
@@ -186,7 +189,7 @@ class CartelaBusiness {
     fun getAll(pageable: Pageable): Page<Cartela> {
         try {
             return cartelaRepository.findByAtiva(false, pageable)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw PersistirDadosException("Cartela não encontrada")
         }
     }
@@ -198,8 +201,8 @@ class CartelaBusiness {
                 .findByAtiva(false)
                 .sortedByDescending { it.id }
                 .run {
-                    this.forEach{
-                        if (cartela.size <= 4){
+                    this.forEach {
+                        if (cartela.size <= 4) {
                             cartela.add(it)
                         }
                     }
@@ -210,31 +213,4 @@ class CartelaBusiness {
             throw PersistirDadosException("Cartela não encontrada")
         }
     }
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

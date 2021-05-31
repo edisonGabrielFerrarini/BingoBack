@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(value = ["/api/ganhador"], produces = [MediaType.APPLICATION_JSON_VALUE])
-@CrossOrigin(origins = ["http://192.168.0.11:8081"])
 class GanhadorApi(
     @Autowired private val ganhadorFacade: GanhadorFacade
 ) {

@@ -9,10 +9,14 @@ data class CartelaDTO(
     val valor_porcentagem: Int
 )
 
-data class  CartelaRendimentosDTO(
+data class CartelaRendimentosDTO(
     val id: Long,
     val valor: Double,
     val rendimentos: Double,
     val valor_numero: Double
 
+)
+
+data class CartelaNumerosDTO(
+    val numeros: String
 )

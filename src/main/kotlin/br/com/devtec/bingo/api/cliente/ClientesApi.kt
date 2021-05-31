@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@CrossOrigin(origins = ["http://192.168.0.11:8081"])
 @RequestMapping(value = ["/api/cliente"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class ClientesApi(
     @Autowired private val clienteFacade: ClienteFacade
@@ -21,6 +20,11 @@ class ClientesApi(
     @GetMapping
     fun getAllClients(pageable: Pageable): ResponseEntity<Page<ClienteResponseDTO>> {
         return ResponseEntity.ok(clienteFacade.getAll(pageable))
+    }
+
+    @GetMapping(value = ["/admin/busca/cpf/{cpf}"])
+    fun getByCPF(@PathVariable("cpf") cpf: String): ResponseEntity<ClienteResponseDTO> {
+        return clienteFacade.getByCPF(cpf)
     }
 
     @GetMapping(value = ["/busca/{id}"])
