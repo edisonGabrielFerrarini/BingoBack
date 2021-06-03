@@ -28,6 +28,10 @@ class UsersBusiness {
 
     fun create(usersDTO: UsersDTO): ResponseEntity<ClienteResponseDTO> {
         try {
+            val findUser = userRepository.findByEmail(usersDTO.email)
+            if (findUser != null){
+                throw PersistirDadosException("erro ao salvar usuario")
+            }
             val user = userRepository.save(
                 usersDTO.toEntity(
                     BCryptPasswordEncoder().encode(usersDTO.senha)
