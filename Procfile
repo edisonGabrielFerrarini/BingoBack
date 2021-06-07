@@ -1,1 +1,1 @@
-java -jar -Dserver.port=8080 target/*.jar
+java -jar target/bingo-0.0.1-SNAPSHOT.jar
