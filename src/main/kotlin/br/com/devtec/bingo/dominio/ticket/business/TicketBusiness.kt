@@ -94,9 +94,8 @@ class TicketBusiness(
 
     fun getTicketsAtivosByCliente(idCliente: Long): ResponseEntity<Any> {
         val tickets = ticketRepository.findByClienteId(idCliente)
-        println(tickets)
         if (tickets != null && tickets.isNotEmpty()) {
-            verificarSeUsuarioEstaLogadoCorretamente(tickets[1].cliente.users.email)
+            verificarSeUsuarioEstaLogadoCorretamente(tickets[0].cliente.users.email)
             val ticketsDTO = tickets.asSequence().filter { it.cartela.ativa }.map {
                 it.toDTO()
             }.toList()
