@@ -1,0 +1,1 @@
+java -jar -Dserver.port=12294 target/*.jar
