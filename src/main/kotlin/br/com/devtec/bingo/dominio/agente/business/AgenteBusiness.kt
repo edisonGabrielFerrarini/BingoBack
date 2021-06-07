@@ -45,10 +45,7 @@ class AgenteBusiness(
 
     fun vincularCliente(id_cliente: Long, id_agente: Long){
         val agente = agenteRepository.findById(id_agente)
-        val cliente = clienteFacade.getById(id_cliente)
-        if (agente.isEmpty || cliente == null) {
-            throw PersistirDadosException("Erro ao buscar agente ou cliente")
-        }
+        val cliente = clienteFacade.getById(id_cliente) ?: throw PersistirDadosException("Erro ao buscar agente ou cliente")
         agenteClienteRepository.save(
             ClienteAgente(
                 agente = agente.get(),
